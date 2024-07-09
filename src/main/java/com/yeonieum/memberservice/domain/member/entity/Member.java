@@ -1,6 +1,7 @@
 package com.yeonieum.memberservice.domain.member.entity;
 
 import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
+import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.payment.entity.MemberPaymentCard;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.GenderConverter;
@@ -64,5 +65,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<MemberCoupon> memberCouponList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<MemberStore> memberStoreList = new ArrayList<>();
 
 }
