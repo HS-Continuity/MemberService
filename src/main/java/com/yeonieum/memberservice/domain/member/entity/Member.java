@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.domain.member.entity;
 
+import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.GenderConverter;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
@@ -9,6 +10,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -50,4 +52,8 @@ public class Member {
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
     private ActiveStatus isDeleted = ActiveStatus.INACTIVE;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<MemberAddress> addressList = new ArrayList<>();
 }
