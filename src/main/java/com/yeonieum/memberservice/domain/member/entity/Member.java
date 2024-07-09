@@ -61,4 +61,8 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     private MemberPaymentCard paymentCard ;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<MemberCoupon> memberCouponList = new ArrayList<>();
+
 }
