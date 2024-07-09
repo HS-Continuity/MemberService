@@ -60,4 +60,5 @@ public class Member {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
     private MemberPaymentCard paymentCard ;
+
 }
