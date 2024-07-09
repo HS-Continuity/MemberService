@@ -1,5 +1,6 @@
-package com.yeonieum.memberservice.global.enums;
+package com.yeonieum.memberservice.global.converter;
 
+import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 

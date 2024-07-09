@@ -1,0 +1,53 @@
+package com.yeonieum.memberservice.domain.member.entity;
+
+import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
+import com.yeonieum.memberservice.global.converter.GenderConverter;
+import com.yeonieum.memberservice.global.enums.ActiveStatus;
+import com.yeonieum.memberservice.global.enums.Gender;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
+@Table(name = "member")
+public class Member {
+
+    @Id
+    @Column(name = "member_id")
+    private String memberId;
+
+    @Column(name = "member_name", nullable = false)
+    private String memberName;
+
+    @Column(name = "member_email", nullable = false, unique = true)
+    private String memberEmail;
+
+    @Column(name = "member_password", nullable = false)
+    private String memberPassword;
+
+    @Column(name = "member_birthday", nullable = false)
+    private LocalDate memberBirthday;
+
+    @Column(name = "member_phone_number", nullable = false)
+    private String memberPhoneNumber;
+
+    @Convert(converter = GenderConverter.class)
+    @Column(nullable = false)
+    private Gender gender;
+
+    @Convert(converter = ActiveStatusConverter.class)
+    @Column(name = "is_simple_payment_agreed", nullable = false)
+    @Builder.Default
+    private ActiveStatus isSimplePaymentAgreed = ActiveStatus.INACTIVE;
+
+    @Convert(converter = ActiveStatusConverter.class)
+    @Column(name = "is_deleted", nullable = false)
+    @Builder.Default
+    private ActiveStatus isDeleted = ActiveStatus.INACTIVE;
+}
