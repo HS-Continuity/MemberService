@@ -28,7 +28,7 @@ public class MemberCouponController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 쿠폰 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 쿠폰 조회 실패")
     })
-    @GetMapping("")
+    @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId) {
 
         List<MemberResponse.RetrieveMemberCouponDto> retrieveMemberCoupons
