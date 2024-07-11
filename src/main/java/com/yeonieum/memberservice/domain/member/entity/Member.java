@@ -46,11 +46,6 @@ public class Member {
     private Gender gender;
 
     @Convert(converter = ActiveStatusConverter.class)
-    @Column(name = "is_simple_payment_agreed", nullable = false)
-    @Builder.Default
-    private ActiveStatus isSimplePaymentAgreed = ActiveStatus.INACTIVE;
-
-    @Convert(converter = ActiveStatusConverter.class)
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
     private ActiveStatus isDeleted = ActiveStatus.INACTIVE;
@@ -59,8 +54,8 @@ public class Member {
     @Builder.Default
     private List<MemberAddress> addressList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
-    private MemberPaymentCard paymentCard ;
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemberPaymentCard> paymentCardList ;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

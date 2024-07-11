@@ -1,7 +1,9 @@
 package com.yeonieum.memberservice.domain.payment.entity;
 
 import com.yeonieum.memberservice.domain.member.entity.Member;
+import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.YearMonthConverter;
+import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,9 +23,12 @@ public class MemberPaymentCard {
     @Column(name = "member_payment_card_id")
     private Long memberPaymentCardId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
+
+    @Column(name = "card_company", nullable = false)
+    private String cardCompany;
 
     @Column(name = "card_number", nullable = false)
     private String cardNumber;
@@ -31,12 +36,21 @@ public class MemberPaymentCard {
     @Column(name = "card_password", nullable = false, length = 2)
     private String cardPassword;
 
-    //년월(ex. 2407)
+    @Column(name = "cvc_number", nullable = false, length = 3)
+    private String cvcNumber;
+
+    //년월(ex. 0724) - 월 + 년
     @Convert(converter = YearMonthConverter.class)
     @Column(name = "card_expiration", nullable = false)
     private YearMonth cardExpiration;
 
     @Column(name = "master_birthday", nullable = false)
     private LocalDate masterBirthday;
+
+    @Convert(converter = ActiveStatusConverter.class)
+    @Column(name = "is_simple_payment_agreed", nullable = false)
+    @Builder.Default
+    private ActiveStatus isSimplePaymentAgreed = ActiveStatus.INACTIVE;
+
 }
 
