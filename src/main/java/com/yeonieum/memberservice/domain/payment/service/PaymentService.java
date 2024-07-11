@@ -52,6 +52,7 @@ public class PaymentService {
      * @param registerMemberPaymentCardDto 등록할 결제카드의 정보
      * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
      * @throws IllegalStateException 등록했는 결제카드가 5개를 초과할 경우
+     * @throws IllegalStateException 이미 존재하는 은행 및 계좌번호 조합인 경우
      * @return 결제카드 등록 성공 여부
      */
     @Transactional
@@ -63,6 +64,11 @@ public class PaymentService {
         List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(registerMemberPaymentCardDto.getMemberId());
         if (existingCards.size() >= 5) {
             throw new IllegalStateException("등록할 수 있는 결제카드는 최대 5개까지 입니다.");
+        }
+
+        boolean cardExists = memberPaymentCardRepository.findByCardCompanyAndCardNumber(registerMemberPaymentCardDto.getCardCompany(), registerMemberPaymentCardDto.getCardNumber()).isPresent();
+        if (cardExists) {
+            throw new IllegalStateException("이미 존재하는 은행 및 계좌번호 조합입니다.");
         }
 
         MemberPaymentCard memberPaymentCard = MemberPaymentCard.builder()

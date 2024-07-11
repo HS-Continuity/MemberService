@@ -1,6 +1,7 @@
 package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
+import com.yeonieum.memberservice.domain.payment.dto.PaymentRequest;
 import com.yeonieum.memberservice.domain.payment.dto.PaymentResponse;
 import com.yeonieum.memberservice.domain.payment.service.PaymentService;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
@@ -10,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,5 +37,21 @@ public class PaymentController {
                 .result(retrieveMemberPaymentCards)
                 .successCode(SuccessCode.SELECT_SUCCESS)
                 .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원 결제카드 등록", description = "회원의 결제카드를 등록하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 결제카드 등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 등록 실패")
+    })
+    @PostMapping("")
+    public ResponseEntity<ApiResponse> registerMemberPaymentCards(@RequestBody PaymentRequest.RegisterMemberPaymentCardDto registerMemberPaymentCardDto) {
+
+        paymentService.registerMemberPaymentCard(registerMemberPaymentCardDto);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.INSERT_SUCCESS)
+                .build(), HttpStatus.CREATED);
     }
 }
