@@ -30,7 +30,7 @@ public class MemberCoupon {
     @JoinColumn(name = "coupon_id")
     private Coupon coupon;
 
-    @Column(name = "use_date_time", nullable = false)
+    @Column(name = "use_date_time")
     private LocalDateTime useDateTime;
 
     @Convert(converter = ActiveStatusConverter.class)
