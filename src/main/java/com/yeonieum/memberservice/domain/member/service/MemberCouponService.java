@@ -4,6 +4,7 @@ import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.entity.MemberCoupon;
 import com.yeonieum.memberservice.domain.member.repository.MemberCouponRepository;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class MemberCouponService {
      * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
      * @return 회원의 쿠폰 목록
      */
+    @Transactional
     public List<MemberResponse.RetrieveMemberCouponDto> retrieveMemberCoupons (String memberId){
 
         if(!memberRepository.existsById(memberId)){
