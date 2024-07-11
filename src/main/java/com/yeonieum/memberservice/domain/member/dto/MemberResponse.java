@@ -9,7 +9,7 @@ public class MemberResponse {
 
     @Getter
     @Builder
-    public static class  MemberCouponInformationDto{
+    public static class RetrieveMemberCouponDto {
 
         private Long memberCouponId;
         private String memberId;
