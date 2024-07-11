@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 @Converter(autoApply = true)
 public class YearMonthConverter implements AttributeConverter<YearMonth, String> {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyMM");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMyy");
 
     @Override
     public String convertToDatabaseColumn(YearMonth attribute) {
