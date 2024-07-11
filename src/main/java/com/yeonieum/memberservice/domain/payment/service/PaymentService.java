@@ -36,7 +36,7 @@ public class PaymentService {
             throw new IllegalArgumentException("존재하지 않는 회원 ID 입니다.");
         }
 
-        List<MemberPaymentCard> memberPaymentCards = memberPaymentCardRepository.findByMemberId(memberId);
+        List<MemberPaymentCard> memberPaymentCards = memberPaymentCardRepository.findByMember_MemberId(memberId);
 
         return memberPaymentCards.stream()
                 .map(paymentCard -> PaymentResponse.RetrieveMemberPaymentCardDto.builder()
@@ -60,7 +60,8 @@ public class PaymentService {
         Member targetMember = memberRepository.findById(registerMemberPaymentCardDto.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
-        if(memberPaymentCardRepository.findByMemberId(registerMemberPaymentCardDto.getMemberId()).toArray().length > 5){
+        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(registerMemberPaymentCardDto.getMemberId());
+        if (existingCards.size() >= 5) {
             throw new IllegalStateException("등록할 수 있는 결제카드는 최대 5개까지 입니다.");
         }
 

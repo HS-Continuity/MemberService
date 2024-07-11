@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MemberPaymentCardRepository extends JpaRepository<MemberPaymentCard, Long> {
-    List<MemberPaymentCard> findByMemberId(String memberId);
+    List<MemberPaymentCard> findByMember_MemberId(String memberId);
 }
