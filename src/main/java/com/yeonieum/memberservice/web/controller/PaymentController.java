@@ -54,4 +54,19 @@ public class PaymentController {
                 .successCode(SuccessCode.INSERT_SUCCESS)
                 .build(), HttpStatus.CREATED);
     }
+
+    @Operation(summary = "회원 결제카드 삭제", description = "회원의 결제카드를 삭제하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 결제카드 삭제 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 삭제 실패")
+    })
+    @DeleteMapping("/{memberPaymentCardId}")
+    public ResponseEntity<ApiResponse> deleteCartProduct(@PathVariable("memberPaymentCardId") Long memberPaymentCardId) {
+        paymentService.deleteMemberPaymentCard(memberPaymentCardId);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.DELETE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
 }
