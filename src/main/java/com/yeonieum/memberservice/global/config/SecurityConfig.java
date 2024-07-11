@@ -5,7 +5,6 @@ import com.yeonieum.memberservice.auth.handler.JwtAuthenticationFailureHandler;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationSuccessHandler;
 import com.yeonieum.memberservice.auth.provider.JwtAuthenticationProvider;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
-import com.yeonieum.memberservice.auth.userdetails.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +31,7 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
@@ -52,7 +52,7 @@ public class SecurityConfig {
         http.
                 httpBasic(AbstractHttpConfigurer::disable); // Basic 비활성화
         http.
-                addFilterAt(new JwtLoginFilter(jwtAuthenticationSuccessHandler, getAuthenticationManger(), jwtUtils), UsernamePasswordAuthenticationFilter.class);
+                addFilterAt(new JwtLoginFilter(jwtAuthenticationSuccessHandler, jwtAuthenticationFailureHandler, getAuthenticationManger(), jwtUtils), UsernamePasswordAuthenticationFilter.class);
         http.
                 sessionManagement((s) ->
                                         s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -62,7 +62,8 @@ public class SecurityConfig {
 
         http.
                 formLogin((form) -> form.loginPage("/login").loginProcessingUrl("/api/auth/login").permitAll()
-                        .successHandler(jwtAuthenticationSuccessHandler).permitAll());
+                        .successHandler(jwtAuthenticationSuccessHandler)
+                        .failureHandler(jwtAuthenticationFailureHandler));
 
         return http.build();
     }

@@ -2,6 +2,7 @@ package com.yeonieum.memberservice.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeonieum.memberservice.auth.authenticaton.JwtAuthenticationToken;
+import com.yeonieum.memberservice.auth.handler.JwtAuthenticationFailureHandler;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationSuccessHandler;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -22,12 +23,14 @@ import java.util.stream.Collectors;
 
 public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
-    public JwtLoginFilter(JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+    public JwtLoginFilter(JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler, JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.jwtAuthenticationSuccessHandler = jwtAuthenticationSuccessHandler;
+        this.jwtAuthenticationFailureHandler = jwtAuthenticationFailureHandler;
         this.authenticationManager = authenticationManager;
         this.jwtUtils = jwtUtils;
         this.setFilterProcessesUrl("/api/auth/login");
@@ -63,6 +66,12 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         jwtAuthenticationSuccessHandler.onAuthenticationSuccess(request, response, (JwtAuthenticationToken)authResult);
     }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        jwtAuthenticationFailureHandler.onAuthenticationFailure(request, response, failed);
+    }
+
 
     @Getter
     @Setter
