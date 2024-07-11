@@ -23,6 +23,12 @@ public class MemberAddress {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name ="recipient_name", nullable = false)
+    private String recipientName;
+
+    @Column(name ="recipient_phone_number", nullable = false)
+    private String recipientPhoneNumber;
+
     @Column(nullable = false)
     private String address;
 
