@@ -10,7 +10,7 @@ public class MemberStoreResponse {
 
     @Getter
     @Builder
-    public static class MemberInformationDto{
+    public static class RetrieveMemberInformationDto {
         private String memberId;
         private String memberName;
         private String memberEmail;
