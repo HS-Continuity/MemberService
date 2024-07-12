@@ -61,7 +61,7 @@ public class OAuthAttributes {
         return OAuthAttributes.builder()
                 .name((String) kakaoProfile.get("nickname"))
                 .email((String) kakaoAccount.get("email"))
-                .loginId(createId(registrationId, (String) attributes.get("id")))
+                .loginId(createId(registrationId, String.valueOf((Long) attributes.get("id"))))
                 .attributes(attributes)
                 .nameAttributeKey(userNameAttributeName)
                 .build();
