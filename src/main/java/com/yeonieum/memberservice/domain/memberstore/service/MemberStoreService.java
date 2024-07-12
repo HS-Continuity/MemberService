@@ -22,11 +22,11 @@ public class MemberStoreService {
      * @return 고객 회원들의 정보
      */
     @Transactional
-    public Page<MemberStoreResponse.MemberInformationDto> retrieveStoreMembers(Long customerId, Pageable pageable) {
+    public Page<MemberStoreResponse.RetrieveMemberInformationDto> retrieveStoreMembers(Long customerId, Pageable pageable) {
 
         Page<MemberStore> memberStores = memberStoreRepository.findByCustomerIdAndInactiveMember(customerId, pageable);
 
-        return memberStores.map(memberStore -> MemberStoreResponse.MemberInformationDto.builder()
+        return memberStores.map(memberStore -> MemberStoreResponse.RetrieveMemberInformationDto.builder()
                 .memberId(memberStore.getMember().getMemberId())
                 .memberName(memberStore.getMember().getMemberName())
                 .memberEmail(memberStore.getMember().getMemberEmail())
