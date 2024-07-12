@@ -1,6 +1,5 @@
 package com.yeonieum.memberservice.web.controller;
 
-import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.payment.dto.PaymentRequest;
 import com.yeonieum.memberservice.domain.payment.dto.PaymentResponse;
 import com.yeonieum.memberservice.domain.payment.service.PaymentService;
