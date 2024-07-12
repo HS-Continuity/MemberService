@@ -4,6 +4,8 @@ import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDto;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
+import com.yeonieum.memberservice.global.enums.ActiveStatus;
+import com.yeonieum.memberservice.global.enums.Gender;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +28,7 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("여기 들어오냐?");
         // 승인된 리다이렉트로 적어줬을때 -> 액세스토큰과 요청사용자 개인정보를 userRequest로 래핑하여 함께 가져와준다.
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -55,12 +59,19 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
     private Member joinIfAbsent(OAuthAttributes oAuthAttributes) {
         Optional<Member> member = memberRepository.findById(oAuthAttributes.getLoginId());
         Member createdMember;
+
         if(!member.isPresent()) {
             // 제공 동의한 개인정보를 통해 회원가입
             createdMember = Member.builder()
                     .memberId(oAuthAttributes.getLoginId())
                     .memberEmail(oAuthAttributes.getEmail())
                     .memberName(oAuthAttributes.getName())
+                    .memberName("김또깡")
+                    .memberPassword("김또깡123")
+                    .memberPhoneNumber("010-0000-0000")
+                    .memberBirthday(LocalDate.of(1995, 01, 03))
+                    .gender(Gender.FEMALE)
+                    .isDeleted(ActiveStatus.INACTIVE)
                     .build();
 
             memberRepository.save(createdMember);
