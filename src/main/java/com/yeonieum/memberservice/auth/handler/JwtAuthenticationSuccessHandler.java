@@ -3,15 +3,12 @@ package com.yeonieum.memberservice.auth.handler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +29,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         String token = jwtUtils.createToken(userName);
         String json = new ObjectMapper().writeValueAsString(token);
         response.setContentType("application/json");
-        response = jwtUtils.addJwtToHttpOnlyCookieForSSR(token, response, null);
+        response = jwtUtils.addJwtToHttpOnlyCookie(response, token,null);
         response.setStatus(HttpStatus.OK.value());
         response.getWriter().write(json);
         response.flushBuffer();
