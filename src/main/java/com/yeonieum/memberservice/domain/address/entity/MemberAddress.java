@@ -29,8 +29,11 @@ public class MemberAddress {
     @Column(name ="recipient_phone_number", nullable = false)
     private String recipientPhoneNumber;
 
-    @Column(nullable = false)
-    private String address;
+    @Column(name = "general_address", nullable = false)
+    private String generalAddress;
+
+    @Column(name = "detail_address", nullable = false)
+    private String detailAddress;
 
     @Convert(converter = ActiveStatusConverter.class)
     @Column(name = "is_default_address", nullable = false)
