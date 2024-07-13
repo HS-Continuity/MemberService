@@ -21,7 +21,7 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        makeResponse(request, response, authentication);
+        response.sendRedirect(makeResponse(request, response, authentication));
     }
 
     public String makeResponse(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

@@ -28,7 +28,6 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        System.out.println("여기 들어오냐?");
         // 승인된 리다이렉트로 적어줬을때 -> 액세스토큰과 요청사용자 개인정보를 userRequest로 래핑하여 함께 가져와준다.
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
@@ -61,16 +60,20 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
         Member createdMember;
 
         if(!member.isPresent()) {
+            Optional<Member> alreadyJoinedMember = memberRepository.findByMemberEmail(oAuthAttributes.getEmail());
+            if(alreadyJoinedMember.isPresent()) {
+                throw new RuntimeException("같은 이메일로 갑입된 sns계정이 존재합니다.");
+            }
             // 제공 동의한 개인정보를 통해 회원가입
             createdMember = Member.builder()
                     .memberId(oAuthAttributes.getLoginId())
                     .memberEmail(oAuthAttributes.getEmail())
                     .memberName(oAuthAttributes.getName())
-                    .memberName("김또깡")
-                    .memberPassword("김또깡123")
-                    .memberPhoneNumber("010-0000-0000")
-                    .memberBirthday(LocalDate.of(1995, 01, 03))
-                    .gender(Gender.FEMALE)
+                    .memberName("임시멤버이름") // null처리 예정
+                    .memberPassword("임시패스워드") //
+                    .memberPhoneNumber("010-0000-0000") // null 처리 예정
+                    .memberBirthday(LocalDate.of(1988, 01, 01)) // null처리 예정
+                    .gender(Gender.MALE)
                     .isDeleted(ActiveStatus.INACTIVE)
                     .build();
 
