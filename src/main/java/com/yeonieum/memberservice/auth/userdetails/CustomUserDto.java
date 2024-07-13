@@ -1,9 +1,6 @@
 package com.yeonieum.memberservice.auth.userdetails;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +9,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CustomUserDto {
     private String acceessToken;
     private String username;

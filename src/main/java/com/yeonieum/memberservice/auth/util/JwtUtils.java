@@ -54,7 +54,7 @@ public class JwtUtils {
     }
 
 
-    public HttpServletResponse addJwtToHttpOnlyCookieForSSR(String token, HttpServletResponse response, String accessToken) {
+    public HttpServletResponse addJwtToHttpOnlyCookie(HttpServletResponse response, String token, String accessToken) {
         response.setHeader("Set-Cookie",AUTHORIZATION_HEADER +"=" + token + "; " +
                                                                 "Path=/;" +
                                                                 "Domain=localhost;" +
