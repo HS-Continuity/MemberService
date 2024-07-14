@@ -57,5 +57,9 @@ public class MemberPaymentCard {
     @Builder.Default
     private ActiveStatus isDefaultPaymentCard = ActiveStatus.INACTIVE;
 
+    public void changeIsDefaultPaymentCard(ActiveStatus isDefaultPaymentCard) {
+        this.isDefaultPaymentCard = isDefaultPaymentCard;
+    }
 }
+
 

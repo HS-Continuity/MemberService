@@ -26,6 +26,5 @@ public class Coupon {
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDate expirationDate;
-
 }
 

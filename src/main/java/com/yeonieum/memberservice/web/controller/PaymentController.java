@@ -27,10 +27,12 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 조회 실패")
     })
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> retrieveMemberPaymentCards(@RequestParam("memberId") String memberId) {
+    public ResponseEntity<ApiResponse> retrieveMemberPaymentCards(
+            @RequestParam("memberId") String memberId,
+            @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
 
         List<PaymentResponse.RetrieveMemberPaymentCardDto> retrieveMemberPaymentCards
-                = paymentService.retrieveMemberPaymentCards(memberId);
+                = paymentService.retrieveMemberPaymentCards(memberId, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberPaymentCards)
@@ -60,12 +62,30 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 삭제 실패")
     })
     @DeleteMapping("/{memberPaymentCardId}")
-    public ResponseEntity<ApiResponse> deleteCartProduct(@PathVariable("memberPaymentCardId") Long memberPaymentCardId) {
+    public ResponseEntity<ApiResponse> deleteMemberPaymentCard(@PathVariable("memberPaymentCardId") Long memberPaymentCardId) {
         paymentService.deleteMemberPaymentCard(memberPaymentCardId);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
                 .successCode(SuccessCode.DELETE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원 결제카드 대표카드 수정", description = "회원의 결제카드를 대표카드로 설정 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 결제카드 대표캬드로 수정 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 대표카드로 수정 실패")
+    })
+    @PutMapping("/{memberPaymentCardId}")
+    public ResponseEntity<ApiResponse> modifyMemberPaymentCard(
+            @PathVariable("memberPaymentCardId") Long memberPaymentCardId,
+            @RequestParam("memberId") String memberId) {
+
+        paymentService.modifyMemberPaymentCard(memberId, memberPaymentCardId);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.UPDATE_SUCCESS)
                 .build(), HttpStatus.OK);
     }
 }

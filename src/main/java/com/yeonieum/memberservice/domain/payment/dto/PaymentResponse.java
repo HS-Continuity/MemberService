@@ -11,5 +11,6 @@ public class PaymentResponse {
         private Long memberPaymentCardId;
         private String cardCompany;
         private String cardNumber;
+        private boolean isDefaultPaymentCard;
     }
 }

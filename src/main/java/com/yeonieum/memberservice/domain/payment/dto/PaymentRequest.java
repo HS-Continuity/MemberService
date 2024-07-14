@@ -18,6 +18,7 @@ public class PaymentRequest {
         private String cvcNumber;
         private String cardExpiration;
         private LocalDate masterBirthday;
-        private boolean isSimplePaymentAgreed;
+        private Boolean isSimplePaymentAgreed;
+        private Boolean isDefaultPaymentCard;
     }
 }
