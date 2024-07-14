@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,21 +32,31 @@ public class PaymentService {
      * @return 회원의 결제카드 목록
      */
     @Transactional
-    public List<PaymentResponse.RetrieveMemberPaymentCardDto> retrieveMemberPaymentCards(String memberId){
+    public List<PaymentResponse.RetrieveMemberPaymentCardDto> retrieveMemberPaymentCards(String memberId, boolean isDefault) {
 
-        if(!memberRepository.existsById(memberId)){
+        if (!memberRepository.existsById(memberId)) {
             throw new IllegalArgumentException("존재하지 않는 회원 ID 입니다.");
         }
 
         List<MemberPaymentCard> memberPaymentCards = memberPaymentCardRepository.findByMember_MemberId(memberId);
 
-        return memberPaymentCards.stream()
+        //리스트 스트림으로 변환
+        Stream<MemberPaymentCard> cardStream = memberPaymentCards.stream();
+
+        //필터 이용 -> IsDefaultPaymentCard값이 ACTIVE인 것만 추출
+        if (isDefault) {
+            cardStream = cardStream.filter(card -> card.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE);
+        }
+
+        return cardStream
+                .sorted(Comparator.comparing((MemberPaymentCard card) -> card.getIsDefaultPaymentCard() != ActiveStatus.ACTIVE))
                 .map(paymentCard -> PaymentResponse.RetrieveMemberPaymentCardDto.builder()
                         .memberPaymentCardId(paymentCard.getMemberPaymentCardId())
                         .cardCompany(paymentCard.getCardCompany())
                         .cardNumber(paymentCard.getCardNumber())
+                        .isDefaultPaymentCard(paymentCard.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE)
                         .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); //스트림을 리스트로 수집
     }
 
     /**
@@ -71,6 +83,17 @@ public class PaymentService {
             throw new IllegalStateException("이미 존재하는 은행 및 계좌번호 조합입니다.");
         }
 
+        // 새 카드가 기본 결제카드로 설정될 경우, 기존의 기본 결제카드 상태를 비활성화
+        if (registerMemberPaymentCardDto.getIsDefaultPaymentCard()) {
+            existingCards.stream()
+                    .filter(card -> card.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE)
+                    .findFirst()
+                    .ifPresent(card -> {
+                        card.changeIsDefaultPaymentCard(ActiveStatus.INACTIVE);
+                        memberPaymentCardRepository.save(card);
+                    });
+        }
+
         MemberPaymentCard memberPaymentCard = MemberPaymentCard.builder()
                 .member(targetMember)
                 .cardCompany(registerMemberPaymentCardDto.getCardCompany())
@@ -79,7 +102,8 @@ public class PaymentService {
                 .cvcNumber(registerMemberPaymentCardDto.getCvcNumber())
                 .cardExpiration(YearMonth.parse(registerMemberPaymentCardDto.getCardExpiration(), DateTimeFormatter.ofPattern("MMyy")))
                 .masterBirthday(registerMemberPaymentCardDto.getMasterBirthday())
-                .isSimplePaymentAgreed(registerMemberPaymentCardDto.isSimplePaymentAgreed() ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE)
+                .isSimplePaymentAgreed(registerMemberPaymentCardDto.getIsSimplePaymentAgreed() ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE)
+                .isDefaultPaymentCard(registerMemberPaymentCardDto.getIsDefaultPaymentCard() ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE)
                 .build();
 
         memberPaymentCardRepository.save(memberPaymentCard);
@@ -93,12 +117,42 @@ public class PaymentService {
      * @return 결제카드 삭제 성공 여부
      */
     @Transactional
-    public boolean deleteMemberPaymentCard(Long memberPaymentCardId) {
+    public boolean deleteMemberPaymentCard(Long memberPaymentCardId){
         if(memberPaymentCardRepository.existsById(memberPaymentCardId)) {
             memberPaymentCardRepository.deleteById(memberPaymentCardId);
             return true;
         } else {
             throw new IllegalArgumentException("존재하지 않는 결제카드 ID 입니다.");
         }
+    }
+
+    /**
+     * 회원의 결제카드 대표카드로 설정
+     * @param memberId 회원 ID
+     * @param memberPaymentCardId 결제카드 ID
+     * @throws IllegalArgumentException 존재하지 않는 결제카드 ID인 경우
+     * @return 결제카드 삭제 성공 여부
+     */
+    @Transactional
+    public boolean modifyMemberPaymentCard(String memberId, Long memberPaymentCardId){
+
+        MemberPaymentCard targetMemberPaymentCard = memberPaymentCardRepository.findById(memberPaymentCardId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 결제카드 ID 입니다."));
+
+        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(memberId);
+
+        // 새 카드가 기본 결제카드로 설정될 경우, 기존의 기본 결제카드 상태를 비활성화
+        existingCards.stream()
+                .filter(card -> card.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE)
+                .findFirst()
+                .ifPresent(card -> {
+                    card.changeIsDefaultPaymentCard(ActiveStatus.INACTIVE);
+                    memberPaymentCardRepository.save(card);
+                });
+
+        targetMemberPaymentCard.changeIsDefaultPaymentCard(ActiveStatus.ACTIVE);
+        memberPaymentCardRepository.save(targetMemberPaymentCard);
+
+        return true;
     }
 }
