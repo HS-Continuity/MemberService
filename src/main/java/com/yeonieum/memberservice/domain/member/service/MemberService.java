@@ -128,4 +128,19 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
         return MemberResponse.RetrieveMemberDto.convertToRetrieveMemberDto(member);
     }
+
+    /**
+     * 회원 탈퇴 (is_deleted를 "T"로 변경)
+     * @param memberId 탈퇴할 회원의 ID
+     * @throws IllegalStateException 회원을 찾을 수 없을 경우
+     * @return 탈퇴 처리 성공 여부
+     */
+    @Transactional
+    public boolean deleteMember(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+        member.changeIsDeleted(ActiveStatus.ACTIVE);
+        memberRepository.save(member);
+        return true;
+    }
 }
