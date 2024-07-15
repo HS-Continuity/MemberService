@@ -66,3 +66,19 @@ public class MemberController {
                 .build(),HttpStatus.OK);
 
     }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 처리를 하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 탈퇴 처리 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 탈퇴 처리 실패")
+    })
+    @DeleteMapping
+    public ResponseEntity<ApiResponse> deleteMember(@RequestParam String memberId) {
+        memberService.deleteMember(memberId);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.DELETE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+}
