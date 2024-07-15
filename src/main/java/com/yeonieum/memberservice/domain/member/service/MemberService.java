@@ -117,4 +117,15 @@ public class MemberService {
         return true;
     }
 
+    /**
+     * 회원 정보 조회
+     * @param memberId 조회할 회원 ID
+     * @throws IllegalStateException 회원을 찾을 수 없을 경우
+     * @return 조회된 회원 정보
+     */
+    public MemberResponse.RetrieveMemberDto getMember(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+        return MemberResponse.RetrieveMemberDto.convertToRetrieveMemberDto(member);
+    }
 }
