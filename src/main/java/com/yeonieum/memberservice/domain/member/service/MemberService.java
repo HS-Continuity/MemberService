@@ -18,10 +18,11 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 회원의 결제카드 목록 조회
+     * 회원 가입 기능
      * @param request 회원가입 정보 DTO
      * @throws IllegalStateException 이미 존재하는 이메일일 경우
      * @throws IllegalStateException 이미 존재하는 아이디일 경우
+     * @throws IllegalStateException 이미 존재하는 핸드폰 번호일 경우
      * @return 회원가입 성공여부
      */
     @Transactional
@@ -32,6 +33,10 @@ public class MemberService {
 
         if (memberRepository.findByMemberId(request.getMemberId()).isPresent()) {
             throw new IllegalStateException("이미 존재하는 아이디입니다.");
+        }
+
+        if (memberRepository.findByMemberPhoneNumber(request.getMemberPhoneNumber()).isPresent()) {
+            throw new IllegalStateException("이미 존재하는 핸드폰 번호입니다.");
         }
 
         Member member = Member.builder()
