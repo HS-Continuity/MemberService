@@ -17,6 +17,19 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+//    private MemberResponse.RetrieveMemberDto convertToRetrieveMemberDto(Member member) {
+//        return MemberResponse.RetrieveMemberDto.builder()
+//                .memberId(member.getMemberId())
+//                .memberName(member.getMemberName())
+//                .memberEmail(member.getMemberEmail())
+//                .memberPassword(member.getMemberPassword())
+//                .memberBirthday(member.getMemberBirthday())
+//                .memberPhoneNumber(member.getMemberPhoneNumber())
+//                .gender(member.getGender())
+//                .isDeleted(member.getIsDeleted())
+//                .build();
+//    }
+
     /**
      * 회원 가입 기능
      * @param request 회원가입 정보 DTO
@@ -53,4 +66,55 @@ public class MemberService {
 
         return true;
     }
+
+    /**
+     * 회원 정보 수정
+     * @param memberId 수정할 회원 ID
+     * @param request 수정할 회원 정보 DTO
+     * @throws IllegalStateException 회원을 찾을 수 없을 경우
+     * @return 수정된 회원 정보
+     */
+    @Transactional
+    public boolean updateMember(String memberId, MemberRequest.UpdateMemberRequest request) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+
+        // 비밀번호 수정
+        if(request.getMemberPassword() != null && !request.getMemberPassword().isEmpty()) {
+            member.changeMemberPassword(passwordEncoder.encode(request.getMemberPassword()));
+        }
+
+        // 핸드폰 번호 수정
+        if(request.getMemberPhoneNumber() != null) {
+            member.changeMemberPhoneNumber(request.getMemberPhoneNumber());
+        }
+
+//        if(request.getMemberPassword() != null && !request.getMemberPassword().isEmpty()) {
+//            member.changeMemberPassword(passwordEncoder.encode(request.getMemberPassword()));
+//        }
+//
+//        if(request.getMemberName() != null) {
+//            member.changeMemberName(request.getMemberName());
+//        }
+//
+//        if(request.getMemberEmail() != null) {
+//            member.changeMemberEmail(request.getMemberEmail());
+//        }
+//
+//        if(request.getMemberBirthday() != null) {
+//            member.changeMemberBirthday(request.getMemberBirthday());
+//        }
+//
+//        if(request.getMemberPhoneNumber() != null) {
+//            member.changeMemberPhoneNumber(request.getMemberPhoneNumber());
+//        }
+//
+//        if(request.getGender() != null) {
+//            member.changeGender(request.getGender());
+//        }
+
+        memberRepository.save(member);
+        return true;
+    }
+
 }

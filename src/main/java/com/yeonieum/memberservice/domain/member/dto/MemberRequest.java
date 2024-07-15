@@ -20,4 +20,15 @@ public class MemberRequest {
         private String memberPhoneNumber;
         private Gender gender;
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class UpdateMemberRequest {
+        private String memberName;
+        private String memberEmail;
+        private String memberPassword;
+        private LocalDate memberBirthday;
+        private String memberPhoneNumber;
+        private Gender gender;
+    }
 }

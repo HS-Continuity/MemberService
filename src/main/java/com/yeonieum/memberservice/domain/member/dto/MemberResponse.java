@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.domain.member.dto;
 
+import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,18 @@ public class MemberResponse {
         private String memberPhoneNumber;
         private Gender gender;
         private ActiveStatus isDeleted;
+
+        public static MemberResponse.RetrieveMemberDto convertToRetrieveMemberDto(Member member) {
+            return MemberResponse.RetrieveMemberDto.builder()
+                    .memberId(member.getMemberId())
+                    .memberName(member.getMemberName())
+                    .memberEmail(member.getMemberEmail())
+                    .memberPassword(member.getMemberPassword())
+                    .memberBirthday(member.getMemberBirthday())
+                    .memberPhoneNumber(member.getMemberPhoneNumber())
+                    .gender(member.getGender())
+                    .isDeleted(member.getIsDeleted())
+                    .build();
+        }
     }
 }
