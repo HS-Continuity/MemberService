@@ -35,6 +35,22 @@ public class MemberController {
     }
 
 
+    @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 수정 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 수정 실패")
+    })
+    @PutMapping
+    public ResponseEntity<ApiResponse> updateMember(@RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
+        memberService.updateMember(memberId, request);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.UPDATE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
+
     @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
