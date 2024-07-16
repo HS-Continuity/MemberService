@@ -22,18 +22,10 @@ public class MemberStoreService {
      * @return 고객 회원들의 정보
      */
     @Transactional
-    public Page<MemberStoreResponse.RetrieveMemberInformationDto> retrieveStoreMembers(Long customerId, Pageable pageable) {
+    public Page<MemberStoreResponse.OfRetrieveMemberInformation> retrieveStoreMembers(Long customerId, Pageable pageable) {
 
         Page<MemberStore> memberStores = memberStoreRepository.findByCustomerIdAndInactiveMember(customerId, pageable);
 
-        return memberStores.map(memberStore -> MemberStoreResponse.RetrieveMemberInformationDto.builder()
-                .memberId(memberStore.getMember().getMemberId())
-                .memberName(memberStore.getMember().getMemberName())
-                .memberEmail(memberStore.getMember().getMemberEmail())
-                .memberPhoneNumber(memberStore.getMember().getMemberPhoneNumber())
-                .memberBirthday(memberStore.getMember().getMemberBirthday())
-                .gender(memberStore.getMember().getGender())
-                .build());
+        return memberStores.map(MemberStoreResponse.OfRetrieveMemberInformation::convertedBy);
     }
-
 }

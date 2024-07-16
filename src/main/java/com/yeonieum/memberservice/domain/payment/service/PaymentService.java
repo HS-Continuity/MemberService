@@ -11,8 +11,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,30 +54,30 @@ public class PaymentService {
 
     /**
      * 회원의 결제카드 등록
-     * @param registerMemberPaymentCardDto 등록할 결제카드의 정보
+     * @param ofRegisterMemberPaymentCard 등록할 결제카드의 정보
      * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
      * @throws IllegalStateException 등록했는 결제카드가 5개를 초과할 경우
      * @throws IllegalStateException 이미 존재하는 은행 및 계좌번호 조합인 경우
      * @return 결제카드 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberPaymentCard(PaymentRequest.RegisterMemberPaymentCardDto registerMemberPaymentCardDto){
+    public boolean registerMemberPaymentCard(PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard){
 
-        Member targetMember = memberRepository.findById(registerMemberPaymentCardDto.getMemberId())
+        Member targetMember = memberRepository.findById(ofRegisterMemberPaymentCard.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
-        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(registerMemberPaymentCardDto.getMemberId());
+        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(ofRegisterMemberPaymentCard.getMemberId());
         if (existingCards.size() >= 5) {
             throw new IllegalStateException("등록할 수 있는 결제카드는 최대 5개까지 입니다.");
         }
 
-        boolean cardExists = memberPaymentCardRepository.findByCardCompanyAndCardNumber(registerMemberPaymentCardDto.getCardCompany(), registerMemberPaymentCardDto.getCardNumber()).isPresent();
+        boolean cardExists = memberPaymentCardRepository.findByCardCompanyAndCardNumber(ofRegisterMemberPaymentCard.getCardCompany(), ofRegisterMemberPaymentCard.getCardNumber()).isPresent();
         if (cardExists) {
             throw new IllegalStateException("이미 존재하는 은행 및 계좌번호 조합입니다.");
         }
 
         // 새 카드가 기본 결제카드로 설정될 경우, 기존의 기본 결제카드 상태를 비활성화
-        if (registerMemberPaymentCardDto.getIsDefaultPaymentCard()) {
+        if (ofRegisterMemberPaymentCard.getIsDefaultPaymentCard()) {
             existingCards.stream()
                     .filter(card -> card.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE)
                     .findFirst()
@@ -89,7 +87,7 @@ public class PaymentService {
                     });
         }
 
-        MemberPaymentCard memberPaymentCard = registerMemberPaymentCardDto.toEntity(targetMember);
+        MemberPaymentCard memberPaymentCard = ofRegisterMemberPaymentCard.toEntity(targetMember);
 
         memberPaymentCardRepository.save(memberPaymentCard);
         return true;

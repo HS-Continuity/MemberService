@@ -13,7 +13,7 @@ public class PaymentRequest {
 
     @Getter
     @NoArgsConstructor
-    public static class RegisterMemberPaymentCardDto{
+    public static class OfRegisterMemberPaymentCard {
 
         private String memberId;
         private String cardCompany;

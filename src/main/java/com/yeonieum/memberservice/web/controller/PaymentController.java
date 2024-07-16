@@ -46,9 +46,9 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 등록 실패")
     })
     @PostMapping("")
-    public ResponseEntity<ApiResponse> registerMemberPaymentCards(@RequestBody PaymentRequest.RegisterMemberPaymentCardDto registerMemberPaymentCardDto) {
+    public ResponseEntity<ApiResponse> registerMemberPaymentCards(@RequestBody PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard) {
 
-        paymentService.registerMemberPaymentCard(registerMemberPaymentCardDto);
+        paymentService.registerMemberPaymentCard(ofRegisterMemberPaymentCard);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
