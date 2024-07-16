@@ -9,6 +9,7 @@ import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -64,5 +65,4 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<MemberStore> memberStoreList = new ArrayList<>();
-
 }

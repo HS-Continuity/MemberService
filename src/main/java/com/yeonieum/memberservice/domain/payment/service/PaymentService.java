@@ -32,7 +32,7 @@ public class PaymentService {
      * @return 회원의 결제카드 목록
      */
     @Transactional
-    public List<PaymentResponse.RetrieveMemberPaymentCardDto> retrieveMemberPaymentCards(String memberId, boolean isDefault) {
+    public List<PaymentResponse.OfRetrieveMemberPaymentCard> retrieveMemberPaymentCards(String memberId, boolean isDefault) {
 
         if (!memberRepository.existsById(memberId)) {
             throw new IllegalArgumentException("존재하지 않는 회원 ID 입니다.");
@@ -50,12 +50,7 @@ public class PaymentService {
 
         return cardStream
                 .sorted(Comparator.comparing((MemberPaymentCard card) -> card.getIsDefaultPaymentCard() != ActiveStatus.ACTIVE))
-                .map(paymentCard -> PaymentResponse.RetrieveMemberPaymentCardDto.builder()
-                        .memberPaymentCardId(paymentCard.getMemberPaymentCardId())
-                        .cardCompany(paymentCard.getCardCompany())
-                        .cardNumber(paymentCard.getCardNumber())
-                        .isDefaultPaymentCard(paymentCard.getIsDefaultPaymentCard() == ActiveStatus.ACTIVE)
-                        .build())
+                .map(PaymentResponse.OfRetrieveMemberPaymentCard::convertedBy)
                 .collect(Collectors.toList()); //스트림을 리스트로 수집
     }
 
@@ -94,17 +89,7 @@ public class PaymentService {
                     });
         }
 
-        MemberPaymentCard memberPaymentCard = MemberPaymentCard.builder()
-                .member(targetMember)
-                .cardCompany(registerMemberPaymentCardDto.getCardCompany())
-                .cardNumber(registerMemberPaymentCardDto.getCardNumber())
-                .cardPassword(registerMemberPaymentCardDto.getCardPassword())
-                .cvcNumber(registerMemberPaymentCardDto.getCvcNumber())
-                .cardExpiration(YearMonth.parse(registerMemberPaymentCardDto.getCardExpiration(), DateTimeFormatter.ofPattern("MMyy")))
-                .masterBirthday(registerMemberPaymentCardDto.getMasterBirthday())
-                .isSimplePaymentAgreed(registerMemberPaymentCardDto.getIsSimplePaymentAgreed() ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE)
-                .isDefaultPaymentCard(registerMemberPaymentCardDto.getIsDefaultPaymentCard() ? ActiveStatus.ACTIVE : ActiveStatus.INACTIVE)
-                .build();
+        MemberPaymentCard memberPaymentCard = registerMemberPaymentCardDto.toEntity(targetMember);
 
         memberPaymentCardRepository.save(memberPaymentCard);
         return true;

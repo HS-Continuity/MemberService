@@ -31,7 +31,7 @@ public class PaymentController {
             @RequestParam("memberId") String memberId,
             @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
 
-        List<PaymentResponse.RetrieveMemberPaymentCardDto> retrieveMemberPaymentCards
+        List<PaymentResponse.OfRetrieveMemberPaymentCard> retrieveMemberPaymentCards
                 = paymentService.retrieveMemberPaymentCards(memberId, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
