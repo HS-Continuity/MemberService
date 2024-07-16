@@ -14,8 +14,8 @@ public class PaymentResponse {
         private String cardNumber;
         private char isDefaultPaymentCard;
 
-        public static PaymentResponse.OfRetrieveMemberPaymentCard convertedBy(MemberPaymentCard memberPaymentCard) {
-            return PaymentResponse.OfRetrieveMemberPaymentCard.builder()
+        public static OfRetrieveMemberPaymentCard convertedBy(MemberPaymentCard memberPaymentCard) {
+            return OfRetrieveMemberPaymentCard.builder()
                     .memberPaymentCardId(memberPaymentCard.getMemberPaymentCardId())
                     .cardCompany(memberPaymentCard.getCardCompany())
                     .cardNumber(memberPaymentCard.getCardNumber())

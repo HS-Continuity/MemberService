@@ -37,9 +37,5 @@ public class MemberCoupon {
     @Column(name = "is_used", nullable = false)
     @Builder.Default
     private ActiveStatus isUsed = ActiveStatus.INACTIVE;
-
-    @Column(name = "expiration_date", nullable = false)
-    private LocalDate expirationDate;
-
 }
 
