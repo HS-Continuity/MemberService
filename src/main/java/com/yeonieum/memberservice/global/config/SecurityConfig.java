@@ -42,7 +42,7 @@ public class SecurityConfig {
     private final JwtUtils jwtUtils;
     private final PasswordEncoderConfig passwordEncoderConfig;
 
-    @Value("${yeonieum.cors.domain}")
+
     private String CORS_DOMAIN;
 
     @Bean

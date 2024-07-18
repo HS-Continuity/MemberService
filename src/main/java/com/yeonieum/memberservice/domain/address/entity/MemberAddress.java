@@ -29,6 +29,9 @@ public class MemberAddress {
     @Column(name ="recipient_phone_number", nullable = false)
     private String recipientPhoneNumber;
 
+    @Column(name = "address_name", nullable = false)
+    private String addressName;
+
     @Column(name = "general_address", nullable = false)
     private String generalAddress;
 
