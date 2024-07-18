@@ -26,7 +26,7 @@ public class MemberCouponService {
      * @return 회원의 쿠폰 목록
      */
     @Transactional
-    public List<MemberResponse.RetrieveMemberCouponDto> retrieveMemberCoupons (String memberId){
+    public List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons (String memberId){
 
         if(!memberRepository.existsById(memberId)){
             throw new IllegalArgumentException("존재하지 않는 회원 ID 입니다.");
@@ -38,14 +38,7 @@ public class MemberCouponService {
         List<MemberCoupon> memberCouponList = memberCouponRepository.findActiveCouponsByMemberId(memberId, currentDate);
 
         return memberCouponList.stream()
-                .map(mc -> MemberResponse.RetrieveMemberCouponDto.builder()
-                        .memberCouponId(mc.getMemberCouponId())
-                        .memberId(mc.getMember().getMemberId())
-                        .couponId(mc.getCoupon().getCouponId())
-                        .couponName(mc.getCoupon().getCouponName())
-                        .discountAmount(mc.getCoupon().getDiscountAmount())
-                        .expirationDate(mc.getExpirationDate())
-                        .build())
+                .map(MemberResponse.OfRetrieveMemberCoupon::convertedBy)
                 .collect(Collectors.toList());
     }
 }

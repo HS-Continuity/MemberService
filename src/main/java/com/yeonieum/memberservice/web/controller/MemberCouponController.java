@@ -31,7 +31,7 @@ public class MemberCouponController {
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId) {
 
-        List<MemberResponse.RetrieveMemberCouponDto> retrieveMemberCoupons
+        List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons
                 = memberCouponService.retrieveMemberCoupons(memberId);
 
         return new ResponseEntity<>(ApiResponse.builder()

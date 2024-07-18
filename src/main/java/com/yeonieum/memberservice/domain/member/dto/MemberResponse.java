@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.domain.member.dto;
 
+import com.yeonieum.memberservice.domain.member.entity.MemberCoupon;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
@@ -14,7 +15,7 @@ public class MemberResponse {
 
     @Getter
     @Builder
-    public static class RetrieveMemberCouponDto {
+    public static class OfRetrieveMemberCoupon {
 
         private Long memberCouponId;
         private String memberId;
@@ -22,6 +23,17 @@ public class MemberResponse {
         private String couponName;
         private int discountAmount;
         private LocalDate expirationDate;
+
+        public static OfRetrieveMemberCoupon convertedBy(MemberCoupon memberCoupon) {
+            return OfRetrieveMemberCoupon.builder()
+                    .memberCouponId(memberCoupon.getMemberCouponId())
+                    .memberId(memberCoupon.getMember().getMemberId())
+                    .couponId(memberCoupon.getCoupon().getCouponId())
+                    .couponName(memberCoupon.getCoupon().getCouponName())
+                    .discountAmount(memberCoupon.getCoupon().getDiscountAmount())
+                    .expirationDate(memberCoupon.getCoupon().getExpirationDate())
+                    .build();
+        }
     }
 
     @Getter

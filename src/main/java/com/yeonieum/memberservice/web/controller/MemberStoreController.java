@@ -33,7 +33,7 @@ public class MemberStoreController {
 
         Pageable pageable = PageRequest.of(startPage, pageSize);
 
-        Page<MemberStoreResponse.RetrieveMemberInformationDto> retrieveMemberInformations
+        Page<MemberStoreResponse.OfRetrieveMemberInformation> retrieveMemberInformations
                 = memberStoreService.retrieveStoreMembers(customerId, pageable);
 
         return new ResponseEntity<>(ApiResponse.builder()
