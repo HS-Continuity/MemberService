@@ -3,6 +3,9 @@ package com.yeonieum.memberservice.global.config;
 import com.yeonieum.memberservice.auth.filter.JwtLoginFilter;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationFailureHandler;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationSuccessHandler;
+import com.yeonieum.memberservice.auth.handler.OAuth2LogoutHandler;
+import com.yeonieum.memberservice.auth.handler.OAuthAuthenticationSuccessHandler;
+import com.yeonieum.memberservice.auth.oauth.CustomOAuth2UserServiceImpl;
 import com.yeonieum.memberservice.auth.provider.JwtAuthenticationProvider;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,8 @@ import java.util.List;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final CustomOAuth2UserServiceImpl customOAuth2UserService;
+    private final OAuthAuthenticationSuccessHandler oAuthAuthenticationSuccessHandler;
     private final JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
@@ -65,6 +70,17 @@ public class SecurityConfig {
                         .successHandler(jwtAuthenticationSuccessHandler)
                         .failureHandler(jwtAuthenticationFailureHandler));
 
+        http.
+                oauth2Login((auth) -> auth.loginPage("/loginpage").permitAll()
+                        .successHandler(oAuthAuthenticationSuccessHandler)
+                        //.failureUrl("/login-fail")
+                        .userInfoEndpoint((a) -> a.userService(customOAuth2UserService)));
+
+//        http
+//                .logout((auth) -> auth
+//                        .addLogoutHandler(oAuth2LogoutHandler())
+//                        .logoutSuccessUrl("/loginpage"));
+
         return http.build();
     }
 
@@ -86,5 +102,10 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager getAuthenticationManger() {
         return new ProviderManager(Collections.singletonList(jwtAuthenticationProvider));
+    }
+
+    @Bean
+    public OAuth2LogoutHandler oAuth2LogoutHandler() {
+        return new OAuth2LogoutHandler();
     }
 }

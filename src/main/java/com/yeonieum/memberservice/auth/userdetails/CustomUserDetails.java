@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.auth.userdetails;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,6 +27,7 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
         this.customUserDto = customUserDto;
     }
 
+    @Builder
     public CustomUserDetails(CustomUserDto customUserDto,Map<String, Object> attributes, String nameAttributeKey) {
         this.customUserDto = customUserDto;
         this.attributes = attributes;
