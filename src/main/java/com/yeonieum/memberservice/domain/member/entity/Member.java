@@ -56,6 +56,7 @@ public class Member {
     private List<MemberAddress> addressList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<MemberPaymentCard> paymentCardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
