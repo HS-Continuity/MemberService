@@ -65,4 +65,31 @@ public class Member {
     @Builder.Default
     private List<MemberStore> memberStoreList = new ArrayList<>();
 
+    public void changeMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public void changeMemberEmail(String memberEmail) {
+        this.memberEmail = memberEmail;
+    }
+
+    public void changeMemberPassword(String newPassword) {
+        this.memberPassword = newPassword;
+    }
+
+    public void changeMemberBirthday(LocalDate memberBirthday) {
+        this.memberBirthday = memberBirthday;
+    }
+
+    public void changeMemberPhoneNumber(String memberPhoneNumber) {
+        this.memberPhoneNumber = memberPhoneNumber;
+    }
+
+    public void changeGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void changeIsDeleted(ActiveStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
