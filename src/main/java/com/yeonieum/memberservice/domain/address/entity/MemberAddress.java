@@ -39,5 +39,9 @@ public class MemberAddress {
     @Column(name = "is_default_address", nullable = false)
     @Builder.Default
     private ActiveStatus isDefaultAddress = ActiveStatus.INACTIVE;
+
+    public void changeIsDefaultAddress(ActiveStatus isDefaultAddress) {
+        this.isDefaultAddress = isDefaultAddress;
+    }
 }
 
