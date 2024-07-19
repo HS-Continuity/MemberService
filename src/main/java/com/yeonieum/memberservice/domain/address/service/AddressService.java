@@ -134,6 +134,7 @@ public class AddressService {
                     });
         }
 
+        targetMemberAddress.changeAddressName(registerMemberAddress.getAddressName());
         targetMemberAddress.changeRecipientName(registerMemberAddress.getRecipientName());
         targetMemberAddress.changeRecipientPhoneNumber(registerMemberAddress.getRecipientPhoneNumber());
         targetMemberAddress.changeGeneralAddress(registerMemberAddress.getGeneralAddress());

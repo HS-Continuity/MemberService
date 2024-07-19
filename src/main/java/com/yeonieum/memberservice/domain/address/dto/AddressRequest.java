@@ -14,6 +14,7 @@ public class AddressRequest {
 
         private String memberAddressId;
         private String memberId;
+        private String addressName;
         private String recipientName;
         private String recipientPhoneNumber;
         private String generalAddress;
@@ -23,6 +24,7 @@ public class AddressRequest {
         public MemberAddress toEntity(Member member) {
             return MemberAddress.builder()
                     .member(member)
+                    .addressName(this.addressName)
                     .recipientName(this.recipientName)
                     .recipientPhoneNumber(this.recipientPhoneNumber)
                     .generalAddress(this.generalAddress)

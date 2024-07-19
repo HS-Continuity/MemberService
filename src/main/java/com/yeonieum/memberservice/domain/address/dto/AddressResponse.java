@@ -11,6 +11,7 @@ public class AddressResponse {
     @Builder
     public static class RetrieveMemberAddress {
         private Long memberAddressId;
+        private String addressName;
         private String recipientName;
         private String recipientPhoneNumber;
         private String generalAddress;
@@ -20,6 +21,7 @@ public class AddressResponse {
         public static RetrieveMemberAddress convertedBy(MemberAddress memberAddress) {
             return RetrieveMemberAddress.builder()
                     .memberAddressId(memberAddress.getMemberAddressId())
+                    .addressName(memberAddress.getAddressName())
                     .recipientName(memberAddress.getRecipientName())
                     .recipientPhoneNumber(memberAddress.getRecipientPhoneNumber())
                     .generalAddress(memberAddress.getGeneralAddress())
