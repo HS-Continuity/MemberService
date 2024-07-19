@@ -97,7 +97,7 @@ public class AddressService {
             memberAddressRepository.deleteById(memberAddressId);
             return true;
         } else {
-            throw new IllegalArgumentException("존재하지 않는 주소지 ID 입니다.")
+            throw new IllegalArgumentException("존재하지 않는 주소지 ID 입니다.");
         }
     }
 
@@ -146,6 +146,32 @@ public class AddressService {
         return true;
     }
 
+    /**
+     * 회원의 주소지 대표 주소지로 설정
+     * @param memberId 회원 ID
+     * @param memberAddressId 주소지 ID
+     * @throws IllegalArgumentException 존재하지 않는 주소지 ID인 경우
+     * @return
+     */
+    @Transactional
+    public boolean modifyMemberAddress(String memberId, Long memberAddressId) {
+        MemberAddress targetMemberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 주소지 ID 입니다."));
 
+        List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(memberId);
 
+        // 새 주소지를 기본 주소지로 설정
+        existingAddresses.stream()
+                .filter(address -> address.getIsDefaultAddress() == ActiveStatus.ACTIVE)
+                .findFirst()
+                .ifPresent(address -> {
+                    address.changeIsDefaultAddress(ActiveStatus.INACTIVE);
+                    memberAddressRepository.save(address);
+                });
+
+        targetMemberAddress.changeIsDefaultAddress(ActiveStatus.ACTIVE);
+        memberAddressRepository.save(targetMemberAddress);
+
+        return true;
+    }
 }
