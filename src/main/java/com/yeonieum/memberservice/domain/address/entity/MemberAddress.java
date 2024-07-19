@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.domain.address.entity;
 
+import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
@@ -42,5 +43,25 @@ public class MemberAddress {
     @Column(name = "is_default_address", nullable = false)
     @Builder.Default
     private ActiveStatus isDefaultAddress = ActiveStatus.INACTIVE;
+
+    public void changeRecipientName(String recipientName) {
+        this.recipientName = recipientName;
+    }
+
+    public void changeRecipientPhoneNumber(String recipientPhoneNumber) {
+        this.recipientPhoneNumber = recipientPhoneNumber;
+    }
+
+    public void changeGeneralAddress(String generalAddress) {
+        this.generalAddress = generalAddress;
+    }
+
+    public void changeDetailAddress(String detailAddress) {
+        this.detailAddress = detailAddress;
+    }
+
+    public void changeIsDefaultAddress(ActiveStatus isDefaultAddress) {
+        this.isDefaultAddress = isDefaultAddress;
+    }
 }
 
