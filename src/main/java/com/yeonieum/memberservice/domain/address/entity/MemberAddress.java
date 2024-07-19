@@ -52,6 +52,10 @@ public class MemberAddress {
         this.recipientPhoneNumber = recipientPhoneNumber;
     }
 
+    public void changeAddressName(String addressName) {
+        this.addressName = addressName;
+    }
+
     public void changeGeneralAddress(String generalAddress) {
         this.generalAddress = generalAddress;
     }
