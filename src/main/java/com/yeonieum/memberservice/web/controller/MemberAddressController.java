@@ -98,6 +98,33 @@ public class MemberAddressController {
                 .build(), HttpStatus.OK);
     }
 
+
+    @Operation(summary = "회원 배송지 수정", description = "회원의 배송지 정보를 수정하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 배송지 수정 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "잘못된 요청 또는 이미 존재하는 주소"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 주소지 ID"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @PutMapping("/{memberAddressId}")
+    public ResponseEntity<ApiResponse> updateMemberAddress(
+            @PathVariable("memberAddressId") Long memberAddressId,
+            @RequestBody AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+
+        boolean isUpdated = addressService.updateMemberAddress(memberAddressId, registerMemberAddress);
+
+        if (isUpdated) {
+            return new ResponseEntity<>(ApiResponse.builder()
+                    .result(null)
+                    .successCode(SuccessCode.UPDATE_SUCCESS)
+                    .build(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(ApiResponse.builder()
+                    .result("배송지 수정에 실패했습니다.")
+                    .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
 
 
