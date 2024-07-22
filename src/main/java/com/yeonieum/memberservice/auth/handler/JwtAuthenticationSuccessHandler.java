@@ -24,9 +24,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        String userName = customUserDetails.getUsername();
 
-        String token = jwtUtils.createToken(userName);
+        String token = jwtUtils.createToken(customUserDetails.getCustomUserDto());
         String json = new ObjectMapper().writeValueAsString(token);
         response.setContentType("application/json");
         response = jwtUtils.addJwtToHttpOnlyCookie(response, token,null);

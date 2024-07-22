@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.auth.handler;
 
+import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +26,9 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     }
 
     public String makeResponse(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-        String name = ((OAuth2AuthenticationToken)authentication).getName();
-        String jwt = jwtUtils.createToken(name);
+        CustomUserDetails userDetails = (CustomUserDetails)((OAuth2AuthenticationToken)authentication).getPrincipal();
+
+        String jwt = jwtUtils.createToken(userDetails.getCustomUserDto());
         jwtUtils.addJwtToHttpOnlyCookie(response, jwt, (String) request.getAttribute("token"));
 
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:8010");
