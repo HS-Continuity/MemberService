@@ -6,6 +6,7 @@ import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
+import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.servlet.http.HttpServletRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.yeonieum.memberservice.auth.util.JwtUtils.PROVIDER_TOKEN;
 
 @RequiredArgsConstructor
 @Component
@@ -44,10 +47,11 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
         CustomUserDto customUserDto = CustomUserDto.builder()
                 .username(member.getMemberId())
                 .password(member.getMemberPassword())
+                .role(member.getRole())
                 .build();
 
         request.setAttribute("provider", registrationId);
-        request.setAttribute("token", userRequest.getAccessToken().getTokenValue());
+        request.setAttribute(PROVIDER_TOKEN, userRequest.getAccessToken().getTokenValue());
         return CustomUserDetails.builder()
                 .customUserDto(customUserDto)
                 .attributes(oAuth2User.getAttributes())
@@ -69,12 +73,12 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
                     .memberId(oAuthAttributes.getLoginId())
                     .memberEmail(oAuthAttributes.getEmail())
                     .memberName(oAuthAttributes.getName())
-                    .memberName("임시멤버이름") // null처리 예정
                     .memberPassword("임시패스워드") //
                     .memberPhoneNumber("010-0000-0000") // null 처리 예정
                     .memberBirthday(LocalDate.of(1988, 01, 01)) // null처리 예정
                     .gender(Gender.MALE)
                     .isDeleted(ActiveStatus.INACTIVE)
+                    .role(Role.ROLE_GUEST)
                     .build();
 
             memberRepository.save(createdMember);

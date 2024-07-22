@@ -2,7 +2,7 @@ package com.yeonieum.memberservice.domain.address.service;
 
 import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
 import com.yeonieum.memberservice.domain.address.dto.AddressResponse;
-import com.yeonieum.memberservice.domain.address.dto.AddressResponse.RetrieveMemberAddress;
+import com.yeonieum.memberservice.domain.address.dto.AddressResponse.OfRetrieveMemberAddress;
 import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.domain.address.repository.MemberAddressRepository;
 import com.yeonieum.memberservice.domain.member.entity.Member;
@@ -31,7 +31,7 @@ public class AddressService {
      * @return 회원의 주소지 목록
      */
     @Transactional
-    public List<RetrieveMemberAddress> retrieveMemberAddresses(String memberId, boolean isDefault) {
+    public List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses(String memberId, boolean isDefault) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
@@ -39,7 +39,7 @@ public class AddressService {
         return memberAddressRepository.findByMember_MemberId(memberId).stream()
                 .filter(address -> !isDefault || address.getIsDefaultAddress() == ActiveStatus.ACTIVE)  // ACTIVE인 데이터 추출
                 .sorted(Comparator.comparing((MemberAddress address) -> address.getIsDefaultAddress() != ActiveStatus.ACTIVE))
-                .map(AddressResponse.RetrieveMemberAddress::convertedBy)
+                .map(AddressResponse.OfRetrieveMemberAddress::convertedBy)
                 .collect(Collectors.toList());
 
     }
@@ -53,7 +53,7 @@ public class AddressService {
      * @return 주소지 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberAddress(AddressRequest.RegisterMemberAddress registerMemberAddress) {
+    public boolean registerMemberAddress(AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
         Member targetMember = memberRepository.findById(registerMemberAddress.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
@@ -62,7 +62,7 @@ public class AddressService {
             throw  new IllegalStateException("등록할 수 있는 주소지는 최대 5개 까지입니다.");
         }
 
-        boolean addressExists = memberAddressRepository.findByGeneralAndDetailAddress(
+        boolean addressExists = memberAddressRepository.findByGeneralAddressAndDetailAddress(
                 registerMemberAddress.getGeneralAddress(), registerMemberAddress.getDetailAddress()).isPresent();
         if(addressExists) {
             throw new IllegalStateException("이미 존재하는 주소지입니다.");
@@ -109,12 +109,12 @@ public class AddressService {
      * @return 주소지 수정 성공 여부
      */
     @Transactional
-    public boolean updateMemberAddress(Long memberAddressId, AddressRequest.RegisterMemberAddress registerMemberAddress) {
+    public boolean updateMemberAddress(Long memberAddressId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
         MemberAddress targetMemberAddress = memberAddressRepository.findById(memberAddressId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주소지 ID 입니다."));
 
         // 수정 후의 주소 정보가 이미 다른 주소지로 등록되어 있는지 확인
-        boolean addressExists = memberAddressRepository.findByGeneralAndDetailAddress(
+        boolean addressExists = memberAddressRepository.findByGeneralAddressAndDetailAddress(
                 registerMemberAddress.getGeneralAddress(), registerMemberAddress.getDetailAddress())
                 .stream()
                 .anyMatch(existingAddress -> !existingAddress.getMemberAddressId().equals(memberAddressId));
