@@ -10,7 +10,7 @@ public class AddressRequest {
 
     @Getter
     @NoArgsConstructor
-    public static class RegisterMemberAddress {
+    public static class OfRegisterMemberAddress {
 
         private String memberAddressId;
         private String memberId;

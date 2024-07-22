@@ -1,6 +1,8 @@
 package com.yeonieum.memberservice.web.controller;
 
+import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
 import com.yeonieum.memberservice.domain.address.dto.AddressResponse;
+import com.yeonieum.memberservice.domain.address.dto.AddressResponse.OfRetrieveMemberAddress;
 import com.yeonieum.memberservice.domain.address.dto.AddressResponse.RetrieveMemberAddress;
 import com.yeonieum.memberservice.domain.address.service.AddressService;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +37,29 @@ public class MemberAddressController {
             @RequestParam("memberId") String memberId,
             @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
 
-        List<RetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
+        List<OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberAddresses)
                 .successCode(SuccessCode.SELECT_SUCCESS)
                 .build(), HttpStatus.OK);
     }
+
+    @Operation(summary = "회원 주소지 등록", description = "회원 주소지를 등록하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 주소지 등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 주소지 등록 실패")
+    })
+    @PostMapping("")
+    public ResponseEntity<ApiResponse> registerMemberAddresses(@RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
+
+        addressService.registerMemberAddress(ofRegisterMemberAddress);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.INSERT_SUCCESS)
+                .build(), HttpStatus.CREATED);
+    }
+
+
 }
