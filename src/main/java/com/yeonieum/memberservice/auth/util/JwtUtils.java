@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.auth.util;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,10 @@ public class JwtUtils {
         key = Keys.hmacShaKeyFor(decodedBytes);
     }
 
+    public String extractUsername(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
 
     public String createToken(String tokenType, CustomUserDto userDto) {
         long expirationTime = tokenType.equals(ACCESS_TOKEN) ? ACCESS_TOKEN_VALIDATION_TIME : REFRESH_TOKEN_VALIDATION_TIME;
@@ -62,7 +67,21 @@ public class JwtUtils {
         return tokenMap;
     }
 
-
+    public boolean validateToken(String token) {
+        try{
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            System.out.println("Invalid JWT Signature");
+        } catch (ExpiredJwtException e) {
+            System.out.println("Expired JWT");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported JWT");
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claim is empty");
+        }
+        return false;
+    }
 
     public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
         response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + "; " +
