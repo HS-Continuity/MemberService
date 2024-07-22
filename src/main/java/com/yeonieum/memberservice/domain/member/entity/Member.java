@@ -5,8 +5,10 @@ import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.payment.entity.MemberPaymentCard;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.GenderConverter;
+import com.yeonieum.memberservice.global.converter.RoleConverter;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
+import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.BatchSize;
@@ -45,6 +47,10 @@ public class Member {
     @Convert(converter = GenderConverter.class)
     @Column(nullable = false)
     private Gender gender;
+
+    @Convert(converter = RoleConverter.class)
+    @Column(nullable = false)
+    private Role role;
 
     @Convert(converter = ActiveStatusConverter.class)
     @Column(name = "is_deleted", nullable = false)
