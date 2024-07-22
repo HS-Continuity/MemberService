@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Component
 public class JwtUtils {
-    public static final String BEARER_PREFIX = "Bearer";
+    public static final String BEARER_PREFIX = "Bearer ";
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String PROVIDER_TOKEN = "PROVIDER_TOKEN";
@@ -92,5 +92,13 @@ public class JwtUtils {
                                                                 "SameSite=None;" +
                                                                 "Secure;");
         return response;
+    }
+
+    public long getRemainingExpirationTime(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Date expirationDate = claims.getExpiration();
+        long currentTimeMillis = System.currentTimeMillis();
+
+        return expirationDate.getTime() - currentTimeMillis;
     }
 }
