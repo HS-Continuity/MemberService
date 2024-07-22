@@ -20,6 +20,8 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.yeonieum.memberservice.auth.util.JwtUtils.PROVIDER_TOKEN;
+
 @RequiredArgsConstructor
 @Component
 public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
@@ -49,7 +51,7 @@ public class CustomOAuth2UserServiceImpl extends DefaultOAuth2UserService {
                 .build();
 
         request.setAttribute("provider", registrationId);
-        request.setAttribute("token", userRequest.getAccessToken().getTokenValue());
+        request.setAttribute(PROVIDER_TOKEN, userRequest.getAccessToken().getTokenValue());
         return CustomUserDetails.builder()
                 .customUserDto(customUserDto)
                 .attributes(oAuth2User.getAttributes())
