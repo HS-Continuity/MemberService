@@ -9,7 +9,7 @@ public class AddressResponse {
 
     @Getter
     @Builder
-    public static class RetrieveMemberAddress {
+    public static class OfRetrieveMemberAddress {
         private Long memberAddressId;
         private String addressName;
         private String recipientName;
@@ -18,8 +18,8 @@ public class AddressResponse {
         private String detailAddress;
         private ActiveStatus isDefaultAddress;
 
-        public static RetrieveMemberAddress convertedBy(MemberAddress memberAddress) {
-            return RetrieveMemberAddress.builder()
+        public static OfRetrieveMemberAddress convertedBy(MemberAddress memberAddress) {
+            return OfRetrieveMemberAddress.builder()
                     .memberAddressId(memberAddress.getMemberAddressId())
                     .addressName(memberAddress.getAddressName())
                     .recipientName(memberAddress.getRecipientName())
