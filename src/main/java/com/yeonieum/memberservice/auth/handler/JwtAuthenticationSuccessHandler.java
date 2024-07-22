@@ -7,12 +7,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.Map;
+
+import static com.yeonieum.memberservice.auth.util.JwtUtils.ACCESS_TOKEN;
+import static com.yeonieum.memberservice.auth.util.JwtUtils.REFRESH_TOKEN;
 
 @Component
 @RequiredArgsConstructor
@@ -25,12 +30,12 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        String token = jwtUtils.createToken(customUserDetails.getCustomUserDto());
-        String json = new ObjectMapper().writeValueAsString(token);
+        Map<String, String> tokenMap = jwtUtils.createTokenForLogin(customUserDetails.getCustomUserDto());
+        // 토큰 영속화 추가
+        response.setHeader(HttpHeaders.AUTHORIZATION, tokenMap.get(ACCESS_TOKEN));
         response.setContentType("application/json");
-        response = jwtUtils.addJwtToHttpOnlyCookie(response, token,null);
+        response = jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN));
         response.setStatus(HttpStatus.OK.value());
-        response.getWriter().write(json);
         response.flushBuffer();
     }
 }
