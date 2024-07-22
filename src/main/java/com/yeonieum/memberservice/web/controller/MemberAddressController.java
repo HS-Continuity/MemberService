@@ -1,7 +1,7 @@
 package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
-import com.yeonieum.memberservice.domain.address.dto.AddressResponse.OfRetrieveMemberAddress;
+import com.yeonieum.memberservice.domain.address.dto.AddressResponse;
 import com.yeonieum.memberservice.domain.address.service.AddressService;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
@@ -38,7 +38,7 @@ public class MemberAddressController {
             @RequestParam("memberId") String memberId,
             @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
 
-        List<OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
+        List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberAddresses)
@@ -69,7 +69,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 배송지 삭제 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 삭제 실패")
     })
-    @DeleteMapping("/{memberAddressId}")
+    @DeleteMapping("/{memberAddressId}/delete")
     public ResponseEntity<ApiResponse> deleteMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
         addressService.deleteMemberAddress(memberAddressId);
 
@@ -106,7 +106,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 주소지 ID"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @PutMapping("/{memberAddressId}")
+    @PutMapping("/{memberAddressId}/update")
     public ResponseEntity<ApiResponse> updateMemberAddress(
             @PathVariable("memberAddressId") Long memberAddressId,
             @RequestBody AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
