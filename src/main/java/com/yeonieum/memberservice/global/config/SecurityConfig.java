@@ -41,9 +41,8 @@ public class SecurityConfig {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
     private final PasswordEncoderConfig passwordEncoderConfig;
+    private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
-
-    private String CORS_DOMAIN;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -62,7 +61,7 @@ public class SecurityConfig {
                 sessionManagement((s) ->
                                         s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.
-                authorizeHttpRequests((auth) -> auth.requestMatchers("/actuator/*","/api/member/join","/login", "/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
+                authorizeHttpRequests((auth) -> auth.requestMatchers("/access-token","/api/auth/logout","/actuator/*","/api/member/join","/login", "/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
                         .anyRequest().permitAll()); // 개발환경모드
 
         http.
@@ -73,13 +72,12 @@ public class SecurityConfig {
         http.
                 oauth2Login((auth) -> auth.loginPage("/loginpage").permitAll()
                         .successHandler(oAuthAuthenticationSuccessHandler)
-                        //.failureUrl("/login-fail")
                         .userInfoEndpoint((a) -> a.userService(customOAuth2UserService)));
 
 //        http
 //                .logout((auth) -> auth
-//                        .addLogoutHandler(oAuth2LogoutHandler())
-//                        .logoutSuccessUrl("/loginpage"));
+//                        .addLogoutHandler(oAuth2LogoutHandler));
+
 
         return http.build();
     }
@@ -104,8 +102,4 @@ public class SecurityConfig {
         return new ProviderManager(Collections.singletonList(jwtAuthenticationProvider));
     }
 
-    @Bean
-    public OAuth2LogoutHandler oAuth2LogoutHandler() {
-        return new OAuth2LogoutHandler();
-    }
 }
