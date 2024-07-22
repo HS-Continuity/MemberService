@@ -61,4 +61,20 @@ public class MemberResponse {
                     .build();
         }
     }
+
+    @Getter
+    @Builder
+    public static class OrderMemberInfo {
+        private String memberId;
+        private String memberName;
+        private String memberPhoneNumber;
+
+        public static OrderMemberInfo convertedBy(Member member) {
+            return OrderMemberInfo.builder()
+                    .memberId(member.getMemberId())
+                    .memberName(member.getMemberName())
+                    .memberPhoneNumber(member.getMemberPhoneNumber())
+                    .build();
+        }
+    }
 }
