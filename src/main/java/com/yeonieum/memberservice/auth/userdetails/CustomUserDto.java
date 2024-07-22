@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.auth.userdetails;
 
+import com.yeonieum.memberservice.global.enums.Role;
 import lombok.*;
 
 import java.util.Arrays;
@@ -13,7 +14,6 @@ import java.util.List;
 public class CustomUserDto {
     private String acceessToken;
     private String username;
-    //private String email;
     private String password;
-    //private List<String> role = Arrays.asList("USER");
+    private Role role;
 }
