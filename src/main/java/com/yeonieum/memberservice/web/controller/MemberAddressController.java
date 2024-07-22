@@ -1,9 +1,7 @@
 package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
-import com.yeonieum.memberservice.domain.address.dto.AddressResponse;
 import com.yeonieum.memberservice.domain.address.dto.AddressResponse.OfRetrieveMemberAddress;
-import com.yeonieum.memberservice.domain.address.dto.AddressResponse.RetrieveMemberAddress;
 import com.yeonieum.memberservice.domain.address.service.AddressService;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
@@ -13,7 +11,9 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -61,5 +61,42 @@ public class MemberAddressController {
                 .build(), HttpStatus.CREATED);
     }
 
+    @Operation(summary = "회원 주소지 삭제", description = "회원 주소지를 삭제하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 주소지 삭제 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 주소지 삭제 실패")
+    })
+    @DeleteMapping("/{memberAddressId}")
+    public ResponseEntity<ApiResponse> deleteMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
+        addressService.deleteMemberAddress(memberAddressId);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.DELETE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
