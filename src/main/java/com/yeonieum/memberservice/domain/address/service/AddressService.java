@@ -62,7 +62,7 @@ public class AddressService {
             throw  new IllegalStateException("등록할 수 있는 주소지는 최대 5개 까지입니다.");
         }
 
-        boolean addressExists = memberAddressRepository.findByGeneralAndDetailAddress(
+        boolean addressExists = memberAddressRepository.findByGeneralAddressAndDetailAddress(
                 registerMemberAddress.getGeneralAddress(), registerMemberAddress.getDetailAddress()).isPresent();
         if(addressExists) {
             throw new IllegalStateException("이미 존재하는 주소지입니다.");
@@ -114,7 +114,7 @@ public class AddressService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주소지 ID 입니다."));
 
         // 수정 후의 주소 정보가 이미 다른 주소지로 등록되어 있는지 확인
-        boolean addressExists = memberAddressRepository.findByGeneralAndDetailAddress(
+        boolean addressExists = memberAddressRepository.findByGeneralAddressAndDetailAddress(
                 registerMemberAddress.getGeneralAddress(), registerMemberAddress.getDetailAddress())
                 .stream()
                 .anyMatch(existingAddress -> !existingAddress.getMemberAddressId().equals(memberAddressId));

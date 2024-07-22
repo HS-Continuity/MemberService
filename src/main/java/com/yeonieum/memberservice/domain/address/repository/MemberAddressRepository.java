@@ -13,7 +13,7 @@ public interface MemberAddressRepository extends JpaRepository<MemberAddress, Lo
 
     List<MemberAddress> findByMember_MemberId(String memberId);
 
-    Optional<MemberAddress> findByGeneralAndDetailAddress(String generalAddress, String detailAddress);
+    Optional<MemberAddress> findByGeneralAddressAndDetailAddress(String generalAddress, String detailAddress);
 
     Optional<MemberAddress> findByMemberAndIsDefaultAddress (Member member, ActiveStatus isDefaultAddress);
 }
