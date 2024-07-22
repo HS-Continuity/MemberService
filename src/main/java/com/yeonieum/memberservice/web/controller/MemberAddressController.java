@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,10 +28,10 @@ public class MemberAddressController {
 
     private final AddressService addressService;
 
-    @Operation(summary = "회원 주소지 목록 조회", description = "회원의 주소지 목록을 조회하는 기능입니다.")
+    @Operation(summary = "회원 배송지 목록 조회", description = "회원의 배송지 목록을 조회하는 기능입니다.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 주소지 조회 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 주소지 조회 실패")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 배송지 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 조회 실패")
     })
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberAddress(
@@ -45,10 +46,11 @@ public class MemberAddressController {
                 .build(), HttpStatus.OK);
     }
 
-    @Operation(summary = "회원 주소지 등록", description = "회원 주소지를 등록하는 기능입니다.")
+
+    @Operation(summary = "회원 배송지 등록", description = "회원 배송지를 등록하는 기능입니다.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 주소지 등록 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 주소지 등록 실패")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 배송지 등록 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 등록 실패")
     })
     @PostMapping("")
     public ResponseEntity<ApiResponse> registerMemberAddresses(@RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
@@ -61,10 +63,11 @@ public class MemberAddressController {
                 .build(), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "회원 주소지 삭제", description = "회원 주소지를 삭제하는 기능입니다.")
+
+    @Operation(summary = "회원 배송지 삭제", description = "회원 배송지를 삭제하는 기능입니다.")
     @ApiResponses({
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 주소지 삭제 성공"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 주소지 삭제 실패")
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 배송지 삭제 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 삭제 실패")
     })
     @DeleteMapping("/{memberAddressId}")
     public ResponseEntity<ApiResponse> deleteMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
@@ -76,6 +79,24 @@ public class MemberAddressController {
                 .build(), HttpStatus.OK);
     }
 
+
+    @Operation(summary = "회원 배송지 대표 배송지 수정", description = "회원의 배송지를 대표 배송지로 설정하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 배송지 대표 배송지로 수정 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 대표 배송지로 수정 실패")
+    })
+    @PutMapping("/{memberAddressId}")
+    public ResponseEntity<ApiResponse> modifyMemberAddress(
+            @PathVariable("memberAddressId") Long memberAddressId,
+            @RequestParam("memberId") String memberId) {
+
+        addressService.modifyMemberAddress(memberId, memberAddressId);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.UPDATE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
 
 }
 
