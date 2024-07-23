@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static com.yeonieum.memberservice.auth.util.JwtUtils.ACCESS_TOKEN;
 
+/**
+ * gateway server에서 refresh token을 이용해 access token 재발급 요청을 처리하는 API
+ */
 @RestController
 @RequiredArgsConstructor
 public class ReIssueAccessTokenApi {
