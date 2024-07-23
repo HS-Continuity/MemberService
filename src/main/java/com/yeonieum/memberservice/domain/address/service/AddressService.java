@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AddressService {
 
-    private MemberAddressRepository memberAddressRepository;
-    private MemberRepository memberRepository;
+    private final MemberAddressRepository memberAddressRepository;
+    private final MemberRepository memberRepository;
 
 
     /**
