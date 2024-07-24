@@ -5,6 +5,9 @@ import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+
 public class PaymentResponse {
 
     @Getter
@@ -13,6 +16,7 @@ public class PaymentResponse {
         private Long memberPaymentCardId;
         private String cardCompany;
         private String cardNumber;
+        private YearMonth cardExpiration;
         private ActiveStatus isDefaultPaymentCard;
 
         public static OfRetrieveMemberPaymentCard convertedBy(MemberPaymentCard memberPaymentCard) {
@@ -20,6 +24,7 @@ public class PaymentResponse {
                     .memberPaymentCardId(memberPaymentCard.getMemberPaymentCardId())
                     .cardCompany(memberPaymentCard.getCardCompany())
                     .cardNumber(memberPaymentCard.getCardNumber())
+                    .cardExpiration(memberPaymentCard.getCardExpiration())
                     .isDefaultPaymentCard(memberPaymentCard.getIsDefaultPaymentCard())
                     .build();
         }
