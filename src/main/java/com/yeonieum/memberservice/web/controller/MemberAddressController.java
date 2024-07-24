@@ -46,6 +46,21 @@ public class MemberAddressController {
                 .build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "특정 id로 회원 배송지 조회", description = "특정 memberAddressId에 해당하는 회원의 배송지를 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 특정 배송지 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 특정 배송지 조회 실패")
+    })
+    @GetMapping("/{memberAddressId}")
+    public ResponseEntity<ApiResponse> getMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
+        AddressResponse.OfRetrieveMemberAddress memberAddress = addressService.getMemberAddressById(memberAddressId);
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberAddress)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
 
     @Operation(summary = "회원 배송지 등록", description = "회원 배송지를 등록하는 기능입니다.")
     @ApiResponses({

@@ -45,6 +45,20 @@ public class AddressService {
     }
 
     /**
+     * 특정 memberAddressId로 회원 배송지 조회
+     * @param memberAddressId 조회할 배송지 ID
+     * @throws IllegalArgumentException 존재하지 않는 배송지 ID인 경우
+     * @return 조회된 배송지 정보
+     */
+    @Transactional
+    public  AddressResponse.OfRetrieveMemberAddress getMemberAddressById(Long memberAddressId) {
+        MemberAddress memberAddress = memberAddressRepository.findById(memberAddressId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 배송지 ID 입니다: " + memberAddressId));
+
+        return AddressResponse.OfRetrieveMemberAddress.convertedBy(memberAddress);
+    }
+
+    /**
      * 회원의 주소지 등록
      * @param registerMemberAddress 등록할 주소지 정보
      * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
