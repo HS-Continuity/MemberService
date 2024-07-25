@@ -25,7 +25,7 @@ public class AddressResponse {
                     .recipientName(memberAddress.getRecipientName())
                     .recipientPhoneNumber(memberAddress.getRecipientPhoneNumber())
                     .generalAddress(memberAddress.getGeneralAddress())
-                    .detailAddress(memberAddress.getGeneralAddress())
+                    .detailAddress(memberAddress.getDetailAddress())
                     .isDefaultAddress(memberAddress.getIsDefaultAddress())
                     .build();
         }
