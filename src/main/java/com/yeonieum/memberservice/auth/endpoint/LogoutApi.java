@@ -35,7 +35,7 @@ public class LogoutApi {
 
         tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken));
         tokenService.deleteRefreshToken(authentication.getName());
-        response.setHeader("Set-Cookie", "refreshToken=; Path=/; Domain=localhost; HttpOnly; Max-Age=0; SameSite=None; Secure;");
+        response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain=localhost; HttpOnly; Max-Age=0; SameSite=None; Secure;");
 
         return ResponseEntity.ok().build();
     }

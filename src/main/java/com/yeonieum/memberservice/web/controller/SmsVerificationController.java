@@ -38,7 +38,7 @@ public class SmsVerificationController {
     }
 
     // 인증번호 발송 API
-    @GetMapping("/verification-code")
+    @PostMapping("/verification-code")
     public ResponseEntity<?> sendVerificationCode(@RequestBody SmsRequest smsRequest) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
         defaultMessageService.send(smsVarificationService.writeVerificationCode(smsRequest));
         return new ResponseEntity<>(HttpStatus.OK);
