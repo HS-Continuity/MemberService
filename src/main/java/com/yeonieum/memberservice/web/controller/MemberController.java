@@ -98,4 +98,19 @@ public class MemberController {
                 .build(),HttpStatus.OK);
 
     }
+
+    @Operation(summary = "회원의 요약 정보 조회", description = "회원의 요약 정보를 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
+    })
+    @GetMapping("/summary")
+    public ResponseEntity<ApiResponse> getMemberSummary(@RequestParam String memberId) {
+        MemberResponse.RetrieveSummary memberSummary = memberService.getMemberSummary(memberId);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberSummary)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(),HttpStatus.OK);
+    }
 }
