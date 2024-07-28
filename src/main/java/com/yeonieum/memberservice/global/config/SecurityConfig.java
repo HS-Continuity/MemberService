@@ -51,7 +51,7 @@ public class SecurityConfig {
         http.
                 cors(Customizer.withDefaults());
         http.
-                authorizeHttpRequests((auth) -> auth.requestMatchers(HttpMethod.OPTIONS,"*","/**").permitAll());
+                authorizeHttpRequests((auth) -> auth.requestMatchers(HttpMethod.OPTIONS).permitAll());
 
         http.
                 httpBasic(AbstractHttpConfigurer::disable); // Basic 비활성화
@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .successHandler(oAuthAuthenticationSuccessHandler)
                         .userInfoEndpoint((a) -> a.userService(customOAuth2UserService)));
 
+        http.cors(Customizer.withDefaults());
 //        http
 //                .logout((auth) -> auth
 //                        .addLogoutHandler(oAuth2LogoutHandler));
@@ -86,10 +87,11 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json"));
+        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json", "Authorization", "Bearer"));
         corsConfiguration.addExposedHeader("Bearer");
+        corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addExposedHeader("provider");
-
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowedOrigins(Arrays.asList("localhost:8010"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
