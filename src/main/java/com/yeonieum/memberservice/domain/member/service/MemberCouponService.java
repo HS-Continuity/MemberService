@@ -4,6 +4,7 @@ import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.entity.MemberCoupon;
 import com.yeonieum.memberservice.domain.member.repository.MemberCouponRepository;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
+import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,39 @@ public class MemberCouponService {
         return memberCouponList.stream()
                 .map(MemberResponse.OfRetrieveMemberCoupon::convertedBy)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 회원의 쿠폰 사용 서비스
+     * @param memberCouponId
+     * @return
+     */
+    @Transactional
+    public boolean useMemberCouponStatus(Long memberCouponId) {
+        MemberCoupon memberCoupon = memberCouponRepository.findById(memberCouponId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
+
+        if (memberCoupon.getIsUsed().equals(ActiveStatus.ACTIVE)) {
+            return false;
+        }
+        memberCoupon.changeUseStatus(ActiveStatus.ACTIVE);
+        return true;
+    }
+
+    /**
+     * 주문 실패 시 보상 트랜잭션
+     * @param memberCouponId
+     * @return
+     */
+    @Transactional
+    public boolean unUseMemberCouponStatus(Long memberCouponId) {
+        MemberCoupon memberCoupon = memberCouponRepository.findById(memberCouponId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
+
+        if (memberCoupon.getIsUsed().equals(ActiveStatus.INACTIVE)) {
+            return false;
+        }
+        memberCoupon.changeUseStatus(ActiveStatus.INACTIVE);
+        return true;
     }
 }

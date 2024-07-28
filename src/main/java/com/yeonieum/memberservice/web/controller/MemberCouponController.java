@@ -9,10 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +34,19 @@ public class MemberCouponController {
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberCoupons)
                 .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원 쿠폰 사용", description = "회원의 쿠폰을 사용하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 쿠폰 사용 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 쿠헌 사용 실패")
+    })
+    @PutMapping("/use-status")
+    public ResponseEntity<ApiResponse> useMemberCouponStatus(@RequestParam("memberCouponId") Long memberCouponId) {
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberCouponService.useMemberCouponStatus(memberCouponId))
+                .successCode(SuccessCode.UPDATE_SUCCESS)
                 .build(), HttpStatus.OK);
     }
 }

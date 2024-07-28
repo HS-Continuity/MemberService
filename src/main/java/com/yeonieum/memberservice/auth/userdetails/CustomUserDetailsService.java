@@ -21,7 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         CustomUserDto customUserDto = new CustomUserDto();
         customUserDto.setPassword(member.getMemberPassword());
         customUserDto.setUsername(member.getMemberId());
-        //System.out.println(member.getMemberId() + " " + member.getMemberPassword() + " " + customUserDto.getRole().get(0));
+        customUserDto.setRole(member.getRole());
 
         return new CustomUserDetails(customUserDto);
     }

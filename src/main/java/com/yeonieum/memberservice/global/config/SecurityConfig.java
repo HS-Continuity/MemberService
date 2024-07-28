@@ -41,9 +41,8 @@ public class SecurityConfig {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
     private final PasswordEncoderConfig passwordEncoderConfig;
+    private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
-
-    private String CORS_DOMAIN;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -52,7 +51,7 @@ public class SecurityConfig {
         http.
                 cors(Customizer.withDefaults());
         http.
-                authorizeHttpRequests((auth) -> auth.requestMatchers(HttpMethod.OPTIONS,"*","/**").permitAll());
+                authorizeHttpRequests((auth) -> auth.requestMatchers(HttpMethod.OPTIONS).permitAll());
 
         http.
                 httpBasic(AbstractHttpConfigurer::disable); // Basic 비활성화
@@ -62,7 +61,7 @@ public class SecurityConfig {
                 sessionManagement((s) ->
                                         s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.
-                authorizeHttpRequests((auth) -> auth.requestMatchers("/actuator/*","/api/member/join","/login", "/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
+                authorizeHttpRequests((auth) -> auth.requestMatchers("/access-token","/api/auth/logout","/actuator/*","/api/member/join","/login", "/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
                         .anyRequest().permitAll()); // 개발환경모드
 
         http.
@@ -73,13 +72,13 @@ public class SecurityConfig {
         http.
                 oauth2Login((auth) -> auth.loginPage("/loginpage").permitAll()
                         .successHandler(oAuthAuthenticationSuccessHandler)
-                        //.failureUrl("/login-fail")
                         .userInfoEndpoint((a) -> a.userService(customOAuth2UserService)));
 
+        http.cors(Customizer.withDefaults());
 //        http
 //                .logout((auth) -> auth
-//                        .addLogoutHandler(oAuth2LogoutHandler())
-//                        .logoutSuccessUrl("/loginpage"));
+//                        .addLogoutHandler(oAuth2LogoutHandler));
+
 
         return http.build();
     }
@@ -88,10 +87,11 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json"));
+        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json", "Authorization", "Bearer"));
         corsConfiguration.addExposedHeader("Bearer");
+        corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addExposedHeader("provider");
-
+        corsConfiguration.addAllowedOriginPattern("*");
         corsConfiguration.setAllowedOrigins(Arrays.asList("localhost:8010"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -104,8 +104,4 @@ public class SecurityConfig {
         return new ProviderManager(Collections.singletonList(jwtAuthenticationProvider));
     }
 
-    @Bean
-    public OAuth2LogoutHandler oAuth2LogoutHandler() {
-        return new OAuth2LogoutHandler();
-    }
 }

@@ -156,4 +156,12 @@ public class MemberService {
 
         return MemberResponse.OrderMemberInfo.convertedBy(member);
     }
+
+    // 회원의 요약 정보 조회
+    public MemberResponse.RetrieveSummary getMemberSummary(String memberId) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+
+        return MemberResponse.RetrieveSummary.convertedBy(member);
+    }
 }

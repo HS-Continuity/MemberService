@@ -1,7 +1,9 @@
 package com.yeonieum.memberservice.auth.util;
 
+import com.yeonieum.memberservice.auth.userdetails.CustomUserDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,66 +11,94 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtUtils {
-    // 비밀 키
-    // 유효 기간(ttl)
-    // 토큰 생성
-    // 토큰에서 사용자 이름 추출
-    // 토큰에서 권한 정보 추출
-    // 토큰 유효성 검증
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-    public static final String BEARER_PREFIX = "Bearer";
+    public static final String BEARER_PREFIX = "Bearer ";
+    public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
+    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+    public static final String PROVIDER_TOKEN = "PROVIDER_TOKEN";
 
     @Value("${yeonieum.cors.domain}")
-    private static String CORS_DOMAIN;
-    private final long TOKEN_VALIDATION_TIME = 25 * 60 * 1000L; // 25분
+    public String CORS_DOMAIN;
+    @Value("${jwt.access-token-validation-time}")
+    private long ACCESS_TOKEN_VALIDATION_TIME;
+    @Value("${jwt.refresh-token-validation-time}")
+    private long REFRESH_TOKEN_VALIDATION_TIME;
 
-
-    private String secretKey = "Ddfjladlewmndacafjlkcadfklfnqlekwnfklqjcxlzjalfd"; //4 배수 자리
+    @Value("${jwt.secret-key}")
+    private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @PostConstruct
     public void init() {
-        // base64형식으로 디코딩
         byte[] decodedBytes = Base64.getDecoder().decode(secretKey);
-        // 디코딩된 비밀키를 hmacSha 방식으로 암호화
         key = Keys.hmacShaKeyFor(decodedBytes);
     }
 
-
-    public String createToken(String username) { // role정보도 추가해야된다. UserDto를 아규먼트로 변경해야한다.
-        Date currentDateTime = new Date();
-        return BEARER_PREFIX +
-                Jwts.builder()
-                        .setSubject(username)   // 사용자 식별값
-                        //.claim(AUTHORIZATION_KEY, ) // role
-                        //.claim("EMAIL", ) // email
-                        .claim("username", username)
-                        .setExpiration(new Date(currentDateTime.getTime() + TOKEN_VALIDATION_TIME)) // 유효기간
-                        .setIssuedAt(currentDateTime)   // 발행시간
-                        .signWith(key, signatureAlgorithm)  // 적용 암호화 알고리즘
-                        .compact();
+    public String extractUsername(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
     }
 
 
-    public HttpServletResponse addJwtToHttpOnlyCookie(HttpServletResponse response, String token, String accessToken) {
-        response.setHeader("Set-Cookie",AUTHORIZATION_HEADER +"=" + token + "; " +
+    public String createToken(String tokenType, CustomUserDto userDto) {
+        long expirationTime = tokenType.equals(ACCESS_TOKEN) ? ACCESS_TOKEN_VALIDATION_TIME : REFRESH_TOKEN_VALIDATION_TIME;
+        Date currentDateTime = new Date();
+
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setSubject(userDto.getUsername())
+                        .claim("role", userDto.getRole())
+                        .claim("username", userDto.getUsername())
+                        .setExpiration(new Date(currentDateTime.getTime() + expirationTime))
+                        .setIssuedAt(currentDateTime)
+                        .signWith(key, signatureAlgorithm)
+                        .compact();
+    }
+
+    public Map<String, String> createTokenForLogin(CustomUserDto customUserDto) {
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put(ACCESS_TOKEN, createToken(ACCESS_TOKEN, customUserDto));
+        tokenMap.put(REFRESH_TOKEN, createToken(REFRESH_TOKEN, customUserDto));
+
+        return tokenMap;
+    }
+
+    public boolean validateToken(String token) {
+        try{
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            System.out.println("Invalid JWT Signature");
+        } catch (ExpiredJwtException e) {
+            System.out.println("Expired JWT");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("Unsupported JWT");
+        } catch (IllegalArgumentException e) {
+            System.out.println("JWT claim is empty");
+        }
+        return false;
+    }
+
+    public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
+        response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + "; " +
                                                                 "Path=/;" +
-                                                                "Domain=localhost;" +
+                                                                "Domain=" + "localhost" + "; " +
                                                                 "HttpOnly; " +
-                                                                "Max-Age=604800; " +
+                                                                "Max-Age=" + REFRESH_TOKEN_VALIDATION_TIME + ";" +
                                                                 "SameSite=None;" +
                                                                 "Secure;");
-        response.addHeader("Set-Cookie","access_token=" + accessToken + ";"+
-                                                                        "Path=/;" +
-                                                                        "Domain=localhost;" +
-                                                                        "HttpOnly; " +
-                                                                        "Max-Age=604800; " +
-                                                                        "SameSite=None;" +
-                                                                        "Secure;");
         return response;
-    }// access token이 우리께 아니라 provider 액세스토큰. (구글 , 네이버, ,...)
+    }
+
+    public long getRemainingExpirationTime(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Date expirationDate = claims.getExpiration();
+        long currentTimeMillis = System.currentTimeMillis();
+
+        return expirationDate.getTime() - currentTimeMillis;
+    }
 }

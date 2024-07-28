@@ -26,19 +26,19 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         CustomUserDetails userDetails =  (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
-//        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
-//            throw new BadCredentialsException("Invalid password");
-//        }
-        if(!password.equals(userDetails.getPassword())) {
+        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
+
+//        if(!password.equals(userDetails.getPassword())) {
+//            throw new BadCredentialsException("Invalid password");
+//        }
         return new JwtAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
 
     @Override
     public boolean supports(Class<?> authentication) {
-        // JwtAuthenticationProvider이므로 JwtAuthenticationToken을 처리할 수 있는 Provider임을 실제 구현체에 위임하여 리턴
         return JwtAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }

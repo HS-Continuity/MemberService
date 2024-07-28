@@ -37,5 +37,9 @@ public class MemberCoupon {
     @Column(name = "is_used", nullable = false)
     @Builder.Default
     private ActiveStatus isUsed = ActiveStatus.INACTIVE;
+
+    public void changeUseStatus(ActiveStatus isUsed) {
+        this.isUsed = isUsed;
+    }
 }
 

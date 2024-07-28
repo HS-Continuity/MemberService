@@ -64,6 +64,20 @@ public class MemberResponse {
 
     @Getter
     @Builder
+    public static class RetrieveSummary {
+        private String memberName;
+        private String memberPhoneNumber;
+
+        public static RetrieveSummary convertedBy(Member member) {
+            return RetrieveSummary.builder()
+                    .memberName(member.getMemberName())
+                    .memberPhoneNumber(member.getMemberPhoneNumber())
+                    .build();
+        }
+    }
+
+    @Getter
+    @Builder
     public static class OrderMemberInfo {
         private String memberId;
         private String memberName;
