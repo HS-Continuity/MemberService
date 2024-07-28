@@ -2,6 +2,7 @@ package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.memberstore.dto.MemberStoreResponse;
 import com.yeonieum.memberservice.domain.memberstore.service.MemberStoreService;
+import com.yeonieum.memberservice.global.enums.Gender;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/member-store")
@@ -28,19 +31,23 @@ public class MemberStoreController {
     })
     @GetMapping("/list/{customerId}")
     public ResponseEntity<ApiResponse> retrieveStoreMembers(@PathVariable("customerId") Long customerId,
+                                                            @RequestParam(required = false) String memberId,
+                                                            @RequestParam(required = false) String memberName,
+                                                            @RequestParam(required = false) String memberEmail,
+                                                            @RequestParam(required = false) String memberPhoneNumber,
+                                                            @RequestParam(required = false) LocalDate memberBirthday,
+                                                            @RequestParam(required = false) Gender gender,
                                                             @RequestParam(defaultValue = "0") int startPage,
                                                             @RequestParam(defaultValue = "10") int pageSize) {
 
         Pageable pageable = PageRequest.of(startPage, pageSize);
 
         Page<MemberStoreResponse.OfRetrieveMemberInformation> retrieveMemberInformations
-                = memberStoreService.retrieveStoreMembers(customerId, pageable);
+                = memberStoreService.retrieveStoreMembers(customerId, memberId, memberName, memberEmail, memberPhoneNumber, memberBirthday, gender, pageable);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberInformations)
                 .successCode(SuccessCode.SELECT_SUCCESS)
                 .build(), HttpStatus.OK);
     }
-
-
 }
