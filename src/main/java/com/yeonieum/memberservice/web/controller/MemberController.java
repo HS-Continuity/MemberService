@@ -7,6 +7,7 @@ import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,37 @@ public class MemberController {
     @PutMapping
     public ResponseEntity<ApiResponse> updateMember(@RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
         memberService.updateMember(memberId, request);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(null)
+                .successCode(SuccessCode.UPDATE_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "현재 비밀번호 검증", description = "현재 비밀번호가 올바른지 검증하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "비밀번호 검증 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 검증 실패")
+    })
+    @PostMapping("/verify-password")
+    public ResponseEntity<ApiResponse> verifyPassword(@RequestBody @Valid MemberRequest.VerifyPasswordRequest request) {
+        boolean isValid = memberService.verifyCurrentPassword(request.getMemberId(), request.getCurrentPassword());
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(isValid)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "회원의 비밀번호를 변경하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "현재 비밀번호가 일치하지 않음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 변경 실패")
+    })
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse> changePassword(@RequestBody @Valid MemberRequest.ChangePasswordRequest request) {
+        boolean success = memberService.changePassword(request.getMemberId(), request);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
                 .successCode(SuccessCode.UPDATE_SUCCESS)
