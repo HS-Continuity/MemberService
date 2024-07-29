@@ -26,7 +26,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 가입 실패")
     })
     @PostMapping
-    public ResponseEntity<ApiResponse> registerMember(@RequestBody MemberRequest.RegisterMemberRequest request) {
+    public ResponseEntity<ApiResponse> registerMember(@Valid @RequestBody MemberRequest.RegisterMemberRequest request) {
         memberService.registerMember(request);
 
         return new ResponseEntity<>(ApiResponse.builder()
@@ -43,7 +43,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 수정 실패")
     })
     @PutMapping
-    public ResponseEntity<ApiResponse> updateMember(@RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
+    public ResponseEntity<ApiResponse> updateMember(@Valid @RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
         memberService.updateMember(memberId, request);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -58,7 +58,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 검증 실패")
     })
     @PostMapping("/verify-password")
-    public ResponseEntity<ApiResponse> verifyPassword(@RequestBody @Valid MemberRequest.VerifyPasswordRequest request) {
+    public ResponseEntity<ApiResponse> verifyPassword(@Valid @RequestBody MemberRequest.VerifyPasswordRequest request) {
         boolean isValid = memberService.verifyCurrentPassword(request.getMemberId(), request.getCurrentPassword());
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(isValid)
@@ -74,7 +74,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 변경 실패")
     })
     @PostMapping("/change-password")
-    public ResponseEntity<ApiResponse> changePassword(@RequestBody @Valid MemberRequest.ChangePasswordRequest request) {
+    public ResponseEntity<ApiResponse> changePassword(@Valid @RequestBody MemberRequest.ChangePasswordRequest request) {
         boolean success = memberService.changePassword(request.getMemberId(), request);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
