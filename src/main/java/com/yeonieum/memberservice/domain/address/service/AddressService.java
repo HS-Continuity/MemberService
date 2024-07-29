@@ -6,6 +6,7 @@ import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.domain.address.exception.AddressException;
 import com.yeonieum.memberservice.domain.address.repository.MemberAddressRepository;
 import com.yeonieum.memberservice.domain.member.entity.Member;
+import com.yeonieum.memberservice.domain.member.exception.MemberException;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import static com.yeonieum.memberservice.domain.address.exception.AddressExceptionCode.*;
+import static com.yeonieum.memberservice.domain.member.exception.MemberExceptionCode.MEMBER_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -30,13 +32,13 @@ public class AddressService {
      * 회원의 주소지 목록 조회
      * @param memberId 회원 ID
      * @param isDefault
-     * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
+     * @throws MemberException 존재하지 않는 회원 ID인 경우
      * @return 회원의 주소지 목록
      */
     @Transactional
     public List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses(String memberId, boolean isDefault) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 주소 목록 조회
         return memberAddressRepository.findByMember_MemberId(memberId).stream()
@@ -64,15 +66,15 @@ public class AddressService {
     /**
      * 회원의 주소지 등록
      * @param registerMemberAddress 등록할 주소지 정보
-     * @throws IllegalArgumentException 존재하지 않는 회원 ID인 경우
-     * @throws IllegalStateException 등록하는 주소지가 5개가 넘어가는 경우
-     * @throws IllegalStateException 이미 존재하는 주소지인 경우
+     * @throws MemberException 존재하지 않는 회원 ID인 경우
+     * @throws AddressException 등록하는 주소지가 5개가 넘어가는 경우
+     * @throws AddressException 이미 존재하는 주소지인 경우
      * @return 주소지 등록 성공 여부
      */
     @Transactional
     public boolean registerMemberAddress(AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
         Member targetMember = memberRepository.findById(registerMemberAddress.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(registerMemberAddress.getMemberId());
         if (existingAddresses.size() > 5) {
