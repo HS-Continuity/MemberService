@@ -6,6 +6,7 @@ import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.exception.MemberException;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
+import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,7 @@ public class MemberService {
                 .memberBirthday(request.getMemberBirthday())
                 .memberPhoneNumber(request.getMemberPhoneNumber())
                 .gender(request.getGender())
+                .role(Role.ROLE_MEMBER)
                 .build();
 
        memberRepository.save(member);
