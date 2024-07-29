@@ -49,9 +49,11 @@ public class MemberCouponService {
      * @return
      */
     @Transactional
-    public boolean useMemberCouponStatus(Long memberCouponId) {
-        MemberCoupon memberCoupon = memberCouponRepository.findById(memberCouponId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
+    public boolean useMemberCouponStatus(Long memberCouponId, String memberId) {
+        MemberCoupon memberCoupon = memberCouponRepository.findByMemberCouponIdAndMember_MemberId(memberCouponId,memberId);
+        if(memberCoupon == null){
+            throw new IllegalArgumentException("존재하지 않는 회원 쿠폰 입니다.");
+        }
 
         if (memberCoupon.getIsUsed().equals(ActiveStatus.ACTIVE)) {
             return false;

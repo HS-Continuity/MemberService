@@ -67,11 +67,11 @@ public class AddressService {
      * @return 주소지 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberAddress(AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
-        Member targetMember = memberRepository.findById(registerMemberAddress.getMemberId())
+    public boolean registerMemberAddress(String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+        Member targetMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
-        List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(registerMemberAddress.getMemberId());
+        List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(memberId);
         if (existingAddresses.size() > 5) {
             throw  new IllegalStateException("등록할 수 있는 주소지는 최대 5개 까지입니다.");
         }
@@ -106,8 +106,8 @@ public class AddressService {
      * @return 주소지 삭제 성공 여부
      */
     @Transactional
-    public boolean deleteMemberAddress(Long memberAddressId) {
-        if(memberAddressRepository.existsById(memberAddressId)) {
+    public boolean deleteMemberAddress(Long memberAddressId, String memberId) {
+        if(memberAddressRepository.existsByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)) {
             memberAddressRepository.deleteById(memberAddressId);
             return true;
         } else {
@@ -123,8 +123,8 @@ public class AddressService {
      * @return 주소지 수정 성공 여부
      */
     @Transactional
-    public boolean updateMemberAddress(Long memberAddressId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
-        MemberAddress targetMemberAddress = memberAddressRepository.findById(memberAddressId)
+    public boolean updateMemberAddress(Long memberAddressId, String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+        MemberAddress targetMemberAddress = memberAddressRepository.findByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주소지 ID 입니다."));
 
         // 수정 후의 주소 정보가 이미 다른 주소지로 등록되어 있는지 확인
@@ -169,8 +169,8 @@ public class AddressService {
      * @return
      */
     @Transactional
-    public boolean modifyMemberAddress(String memberId, Long memberAddressId) {
-        MemberAddress targetMemberAddress = memberAddressRepository.findById(memberAddressId)
+    public boolean modifyMemberAddress(Long memberAddressId, String memberId) {
+        MemberAddress targetMemberAddress = memberAddressRepository.findByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 주소지 ID 입니다."));
 
         List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(memberId);

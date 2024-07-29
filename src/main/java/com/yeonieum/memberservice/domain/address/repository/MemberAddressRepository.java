@@ -16,4 +16,8 @@ public interface MemberAddressRepository extends JpaRepository<MemberAddress, Lo
     Optional<MemberAddress> findByGeneralAddressAndDetailAddress(String generalAddress, String detailAddress);
 
     Optional<MemberAddress> findByMemberAndIsDefaultAddress (Member member, ActiveStatus isDefaultAddress);
+
+    boolean existsByMemberAddressIdAndMember_MemberId(Long memberAddressId, String memberId);
+
+    Optional<MemberAddress> findByMemberAddressIdAndMember_MemberId(Long memberAddressId, String memberId);
 }

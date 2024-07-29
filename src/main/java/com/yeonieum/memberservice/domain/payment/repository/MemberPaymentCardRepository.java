@@ -11,4 +11,6 @@ public interface MemberPaymentCardRepository extends JpaRepository<MemberPayment
     List<MemberPaymentCard> findByMember_MemberId(String memberId);
 
     Optional<MemberPaymentCard> findByCardCompanyAndCardNumber(String cardCompany, String cardNumber);
+
+    boolean existsByMemberPaymentCardIdAndMember_MemberId(Long memberPaymentCardId, String memberId);
 }

@@ -16,4 +16,6 @@ public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long
             "AND c.expirationDate > :currentDate " +
             "AND mc.isUsed = com.yeonieum.memberservice.global.enums.ActiveStatus.INACTIVE")
     List<MemberCoupon> findActiveCouponsByMemberId(@Param("memberId") String memberId, @Param("currentDate") LocalDate currentDate);
+
+    MemberCoupon findByMemberCouponIdAndMember_MemberId(Long memberCouponId, String memberId);
 }

@@ -61,12 +61,16 @@ public class PaymentService {
      * @return 결제카드 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberPaymentCard(PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard){
+    public boolean registerMemberPaymentCard(String memberId, PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard){
 
-        Member targetMember = memberRepository.findById(ofRegisterMemberPaymentCard.getMemberId())
+        Member targetMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원 ID 입니다."));
 
-        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(ofRegisterMemberPaymentCard.getMemberId());
+        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(memberId);
+        if(existingCards == null){
+            existingCards = List.of();
+        }
+
         if (existingCards.size() >= 5) {
             throw new IllegalStateException("등록할 수 있는 결제카드는 최대 5개까지 입니다.");
         }
@@ -100,8 +104,8 @@ public class PaymentService {
      * @return 결제카드 삭제 성공 여부
      */
     @Transactional
-    public boolean deleteMemberPaymentCard(Long memberPaymentCardId){
-        if(memberPaymentCardRepository.existsById(memberPaymentCardId)) {
+    public boolean deleteMemberPaymentCard(Long memberPaymentCardId, String memberId){
+        if(memberPaymentCardRepository.existsByMemberPaymentCardIdAndMember_MemberId(memberPaymentCardId, memberId)) {
             memberPaymentCardRepository.deleteById(memberPaymentCardId);
             return true;
         } else {

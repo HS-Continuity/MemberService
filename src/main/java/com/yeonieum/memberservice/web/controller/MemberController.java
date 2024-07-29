@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -43,7 +44,9 @@ public class MemberController {
     })
     @PutMapping
     public ResponseEntity<ApiResponse> updateMember(@RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
-        memberService.updateMember(memberId, request);
+
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        memberService.updateMember(member, request);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
                 .successCode(SuccessCode.UPDATE_SUCCESS)
@@ -75,7 +78,9 @@ public class MemberController {
     })
     @DeleteMapping
     public ResponseEntity<ApiResponse> deleteMember(@RequestParam String memberId) {
-        memberService.deleteMember(memberId);
+
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        memberService.deleteMember(member);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
                 .successCode(SuccessCode.DELETE_SUCCESS)
