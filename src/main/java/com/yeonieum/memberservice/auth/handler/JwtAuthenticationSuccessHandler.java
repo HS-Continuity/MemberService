@@ -1,6 +1,7 @@
 package com.yeonieum.memberservice.auth.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.yeonieum.memberservice.auth.service.TokenService;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     // Jwt 로그인(인증) 성공 시 호출 될 성공핸들러
     private final JwtUtils jwtUtils;
+    private final TokenService tokenService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -32,6 +34,8 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         Map<String, String> tokenMap = jwtUtils.createTokenForLogin(customUserDetails.getCustomUserDto());
         // 토큰 영속화 추가
+        tokenService.saveRefreshToken(customUserDetails.getCustomUserDto().getUsername(), tokenMap.get(REFRESH_TOKEN), jwtUtils.getRemainingExpirationTime(tokenMap.get(ACCESS_TOKEN)));
+
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenMap.get(ACCESS_TOKEN));
         response.setContentType("application/json");
         response = jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN));
