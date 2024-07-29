@@ -4,7 +4,6 @@ import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
