@@ -92,7 +92,7 @@ public class SecurityConfig {
         corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addExposedHeader("provider");
         corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.setAllowedOrigins(Arrays.asList("localhost:8010"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

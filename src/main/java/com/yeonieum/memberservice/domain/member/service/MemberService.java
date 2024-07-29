@@ -17,19 +17,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    private MemberResponse.RetrieveMemberDto convertToRetrieveMemberDto(Member member) {
-//        return MemberResponse.RetrieveMemberDto.builder()
-//                .memberId(member.getMemberId())
-//                .memberName(member.getMemberName())
-//                .memberEmail(member.getMemberEmail())
-//                .memberPassword(member.getMemberPassword())
-//                .memberBirthday(member.getMemberBirthday())
-//                .memberPhoneNumber(member.getMemberPhoneNumber())
-//                .gender(member.getGender())
-//                .isDeleted(member.getIsDeleted())
-//                .build();
-//    }
-
     /**
      * 회원 가입 기능
      * @param request 회원가입 정보 DTO
@@ -89,30 +76,6 @@ public class MemberService {
             member.changeMemberPhoneNumber(request.getMemberPhoneNumber());
         }
 
-//        if(request.getMemberPassword() != null && !request.getMemberPassword().isEmpty()) {
-//            member.changeMemberPassword(passwordEncoder.encode(request.getMemberPassword()));
-//        }
-//
-//        if(request.getMemberName() != null) {
-//            member.changeMemberName(request.getMemberName());
-//        }
-//
-//        if(request.getMemberEmail() != null) {
-//            member.changeMemberEmail(request.getMemberEmail());
-//        }
-//
-//        if(request.getMemberBirthday() != null) {
-//            member.changeMemberBirthday(request.getMemberBirthday());
-//        }
-//
-//        if(request.getMemberPhoneNumber() != null) {
-//            member.changeMemberPhoneNumber(request.getMemberPhoneNumber());
-//        }
-//
-//        if(request.getGender() != null) {
-//            member.changeGender(request.getGender());
-//        }
-
         memberRepository.save(member);
         return true;
     }
@@ -127,6 +90,38 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
         return MemberResponse.RetrieveMemberDto.convertToRetrieveMemberDto(member);
+    }
+
+    /**
+     * 현재 비밀번호 검증
+     * @param memberId 회원 ID
+     * @param currentPassword 현재 비밀번호
+     * @return 비밀번호 일치 여부
+     */
+    public boolean verifyCurrentPassword(String memberId, String currentPassword) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+        return passwordEncoder.matches(currentPassword, member.getMemberPassword());
+    }
+
+    /**
+     * 비밀번호 변경
+     * @param memberId 회원 ID
+     * @param request 비밀번호 변경 요청 DTO
+     * @return 변경 성공 여부
+     */
+    @Transactional
+    public boolean changePassword(String memberId, MemberRequest.ChangePasswordRequest request) {
+        Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalStateException("회원을 찾을 수 없습니다."));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), member.getMemberPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        member.changeMemberPassword(passwordEncoder.encode(request.getNewPassword()));
+        memberRepository.save(member);
+        return true;
     }
 
     /**
