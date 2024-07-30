@@ -34,7 +34,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         Map<String, String> tokenMap = jwtUtils.createTokenForLogin(customUserDetails.getCustomUserDto());
         // 토큰 영속화 추가
-        tokenService.saveRefreshToken(customUserDetails.getCustomUserDto().getUsername(), tokenMap.get(REFRESH_TOKEN), jwtUtils.getRemainingExpirationTime(tokenMap.get(ACCESS_TOKEN)));
+        //tokenService.saveRefreshToken(customUserDetails.getCustomUserDto().getUsername(), tokenMap.get(REFRESH_TOKEN), jwtUtils.getRemainingExpirationTime(tokenMap.get(ACCESS_TOKEN)));
 
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenMap.get(ACCESS_TOKEN));
         response.setContentType("application/json");
