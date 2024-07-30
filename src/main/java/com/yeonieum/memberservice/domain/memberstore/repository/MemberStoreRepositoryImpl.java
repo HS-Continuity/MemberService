@@ -67,4 +67,17 @@ public class MemberStoreRepositoryImpl implements MemberStoreRepositoryCustom {
 
         return new PageImpl<>(results, pageable, total);
     }
+
+    @Override
+    public List<String> findMemberIdsByNamesAndPhoneNumber(String name, String phoneNumber) {
+        QMember member = QMember.member;
+
+        return queryFactory.select(member.memberId)
+                .from(member)
+                .where(
+                        name != null ? member.memberName.contains(name) : null,
+                        phoneNumber != null ? member.memberPhoneNumber.contains(phoneNumber) : null
+                )
+                .fetch();
+    }
 }
