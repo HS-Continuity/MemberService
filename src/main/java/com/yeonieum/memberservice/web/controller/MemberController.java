@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -132,6 +136,23 @@ public class MemberController {
                 .build(),HttpStatus.OK);
 
     }
+
+
+    @Operation(summary = "주문 서비스에 필요한 회원 정보 벌크 조회", description = "주문 서비스에 필요한 회원 정보를 벌크 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
+    })
+    @GetMapping("/list/order")
+    public ResponseEntity<ApiResponse> getOrderMemberInfo(@RequestParam List<String> memberIds) {
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberService.getOrderMemberInfoMap(memberIds))
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(),HttpStatus.OK);
+
+    }
+
 
     @Operation(summary = "회원의 요약 정보 조회", description = "회원의 요약 정보를 조회하는 기능입니다.")
     @ApiResponses({
