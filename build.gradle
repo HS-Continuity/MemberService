@@ -74,6 +74,9 @@ dependencies {
 	// sms
 	implementation 'net.nurigo:sdk:4.3.0'
 
+	// kafka
+	implementation 'org.apache.kafka:kafka-clients'
+	implementation 'org.springframework.kafka:spring-kafka'
 }
 
 dependencyManagement {
