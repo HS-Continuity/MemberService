@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import static com.yeonieum.memberservice.domain.member.exception.MemberExceptionCode.*;
 
 @Service
@@ -161,6 +165,18 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         return MemberResponse.OrderMemberInfo.convertedBy(member);
+    }
+
+    /**
+     * 주문 서비스에 필요한 회원정보 벌크조회
+     * @param memberIds 조회할 회원 ID 리스트
+     * @throws MemberException 회원을 찾을 수 없을 경우
+     * @return 조회된 회원 정보
+     */
+    public Map<String, MemberResponse.OrderMemberInfo> getOrderMemberInfoMap(List<String> memberIds) {
+        Set<Member> member = memberRepository.findAllByMemberIdIn(memberIds);
+
+        return MemberResponse.OrderMemberInfo.convertedMapBy(member);
     }
 
     /**

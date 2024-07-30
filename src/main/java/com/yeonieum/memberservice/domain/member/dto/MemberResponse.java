@@ -10,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MemberResponse {
 
@@ -89,6 +92,11 @@ public class MemberResponse {
                     .memberName(member.getMemberName())
                     .memberPhoneNumber(member.getMemberPhoneNumber())
                     .build();
+        }
+
+        public static Map<String, OrderMemberInfo> convertedMapBy(Set<Member> member) {
+            return member.stream()
+                    .collect(Collectors.toMap(Member::getMemberId, OrderMemberInfo::convertedBy));
         }
     }
 }
