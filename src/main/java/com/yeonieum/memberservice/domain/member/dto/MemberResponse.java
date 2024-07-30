@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.query.Order;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -85,6 +86,13 @@ public class MemberResponse {
         private String memberId;
         private String memberName;
         private String memberPhoneNumber;
+
+        public OrderMemberInfo (String memberId, String memberName, String memberPhoneNumber) {
+            this.memberId = memberId;
+            this.memberName = memberName;
+            this.memberPhoneNumber = memberPhoneNumber;
+        }
+
 
         public static OrderMemberInfo convertedBy(Member member) {
             return OrderMemberInfo.builder()

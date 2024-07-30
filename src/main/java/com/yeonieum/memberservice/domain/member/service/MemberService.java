@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import java.util.List;
@@ -219,5 +221,23 @@ public class MemberService {
     @Transactional
     public List<String> getFilteredMemberIds(String memberName, String memberPhoneNumber) {
         return memberStoreRepositoryImpl.findMemberIdsByNamesAndPhoneNumber(memberName, memberPhoneNumber);
+    }
+
+    /**
+     * 회원 이름과 휴대전화로 필터링 된 회원들의 MemberInfoMap 반환 메서드
+     * @param memberName 회원 이름
+     * @param memberPhoneNumber 회원 전화번호
+     * @return 필터링된 회원 ID들
+     */
+    @Transactional
+    public Map<String, MemberResponse.OrderMemberInfo> getFilteredMemberInfoMap(String memberName, String memberPhoneNumber) {
+        List<MemberResponse.OrderMemberInfo> memberList =
+                memberStoreRepositoryImpl.findMembersByNamesAndPhoneNumber(memberName, memberPhoneNumber);
+
+        Map<String, MemberResponse.OrderMemberInfo> orderMemberInfoMap = new HashMap<>();
+        for(MemberResponse.OrderMemberInfo memberInfo : memberList) {
+            orderMemberInfoMap.put(memberInfo.getMemberId(), memberInfo);
+        }
+        return orderMemberInfoMap;
     }
 }
