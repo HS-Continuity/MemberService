@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Base64;
 import java.util.Optional;
 
 import static com.yeonieum.memberservice.auth.util.JwtUtils.ACCESS_TOKEN;
@@ -36,20 +37,22 @@ public class ReIssueAccessTokenApi {
     public ResponseEntity<?> reIssueAccessToken(@CookieValue(value = "REFRESH_TOKEN") String refreshToken,
                                                 HttpServletRequest reqeust) {
         try{
-            if(jwtUtils.validateToken(refreshToken)) {
-                String role = jwtUtils.getRole(refreshToken);
+            System.out.println(refreshToken);
+            if(jwtUtils.validateToken(refreshToken.substring(6) )) {
+                String role = jwtUtils.getRole(refreshToken.substring(6));
                 String accessToken = Optional.ofNullable(reqeust.getHeader(HttpHeaders.AUTHORIZATION))
                         .filter(authHeader -> authHeader.startsWith(BEARER_PREFIX))
                         .map(authHeader -> authHeader.substring(7))
                         .orElse(null);
 
-                tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken) < 0 ? 0 : jwtUtils.getRemainingExpirationTime(accessToken));
+                if(accessToken != null) {
+                    tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken) < 0 ? 0 : jwtUtils.getRemainingExpirationTime(accessToken));
+                }
                 CustomUserDetails customUserDetails = null;
                 if(role.equals("ROLE_CUSTOMER")) {
                     //customUserDetails = (CustomUserDetails) userDetailsService.loadCustomerByUniqueId(jwtUtils.extractUsername(refreshToken));
                 } else if (role.equals("ROLE_MEMBER")) {
-                    customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(jwtUtils.extractUsername(refreshToken));
-
+                    customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(jwtUtils.extractUsername(refreshToken.substring(6)));
                 }
                 String newAccessToken = jwtUtils.createToken(ACCESS_TOKEN, customUserDetails.getCustomUserDto());
 
@@ -60,6 +63,7 @@ public class ReIssueAccessTokenApi {
                         .build();
             }
         } catch (Exception e) {
+            e.printStackTrace();
            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         return null;
