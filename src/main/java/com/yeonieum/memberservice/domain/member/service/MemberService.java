@@ -5,6 +5,7 @@ import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.exception.MemberException;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
+import com.yeonieum.memberservice.domain.memberstore.repository.MemberStoreRepositoryImpl;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.yeonieum.memberservice.domain.member.exception.MemberExceptionCode.*;
 
@@ -21,6 +25,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MemberStoreRepositoryImpl memberStoreRepositoryImpl;
 
     /**
      * 회원 가입 기능
@@ -159,7 +164,7 @@ public class MemberService {
     }
 
     /**
-     * 출고 서비스에 필요한 회원정보 조회
+     * 수정될 것) 출고 서비스에 필요한 회원정보 조회
      * @param memberId 조회할 회원 ID
      * @throws MemberException 회원을 찾을 수 없을 경우
      * @return 조회된 회원 정보
@@ -169,5 +174,34 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         return MemberResponse.RetrieveSummary.convertedBy(member);
+    }
+
+    /**
+     * 출고 서비스에 필요한 회원정보 조회
+     * @param memberIds 필터링 된 회원들의 ID
+     * @return 조회된 회원 정보 (회원 ID, 회원 이름, 회원 휴대전화 번호)
+     */
+    @Transactional
+    public List<MemberResponse.OrderMemberInfo> getMemberSummaries(List<String> memberIds) {
+        List<Member> members = memberRepository.findAllById(memberIds);
+
+        if (members.isEmpty()) {
+            throw new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
+
+        return members.stream()
+                .map(MemberResponse.OrderMemberInfo::convertedBy)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 회원 이름과 휴대전화로 필터링 된 회원들의 ID 반환 메서드
+     * @param memberName 회원 이름
+     * @param memberPhoneNumber 회원 전화번호
+     * @return 필터링된 회원 ID들
+     */
+    @Transactional
+    public List<String> getFilteredMemberIds(String memberName, String memberPhoneNumber) {
+        return memberStoreRepositoryImpl.findMemberIdsByNamesAndPhoneNumber(memberName, memberPhoneNumber);
     }
 }

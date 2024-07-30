@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -142,6 +144,37 @@ public class MemberController {
         MemberResponse.RetrieveSummary memberSummary = memberService.getMemberSummary(memberId);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberSummary)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(),HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원의 요약 정보 조회", description = "회원의 요약 정보를 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
+    })
+    @GetMapping("/summaries")
+    public ResponseEntity<ApiResponse> getMemberSummaries(@RequestParam List<String> memberIds) {
+        List<MemberResponse.OrderMemberInfo> memberSummaries = memberService.getMemberSummaries(memberIds);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberSummaries)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(),HttpStatus.OK);
+    }
+
+    @Operation(summary = "회원들의 이름과 휴대전화로 필터링된 회원 ID 조회", description = "회원들의 이름과 휴대전화로 필터링된 회원 ID를 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
+    })
+    @GetMapping("/filter")
+    public ResponseEntity<ApiResponse> getFilterMember(@RequestParam(required = false) String memberName,
+                                                       @RequestParam(required = false) String memberPhoneNumber) {
+        List<String> memberSummaries = memberService.getFilteredMemberIds(memberName, memberPhoneNumber);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberSummaries)
                 .successCode(SuccessCode.SELECT_SUCCESS)
                 .build(),HttpStatus.OK);
     }

@@ -6,7 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface MemberStoreRepositoryCustom {
     Page<MemberStore> findByCriteria(Long customerId, String memberId, String memberName, String memberEmail, String memberPhoneNumber, LocalDate memberBirthday, Gender gender, Pageable pageable);
+
+    List<String> findMemberIdsByNamesAndPhoneNumber(String name, String phoneNumber);
 }
