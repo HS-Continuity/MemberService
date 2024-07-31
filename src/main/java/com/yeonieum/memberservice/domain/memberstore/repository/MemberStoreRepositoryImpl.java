@@ -4,7 +4,6 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
-import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.entity.QMember;
 import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.memberstore.entity.QMemberStore;
