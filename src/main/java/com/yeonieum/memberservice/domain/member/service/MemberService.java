@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -239,5 +241,33 @@ public class MemberService {
             orderMemberInfoMap.put(memberInfo.getMemberId(), memberInfo);
         }
         return orderMemberInfoMap;
+    }
+
+    /**
+     * 통계자료에 필요한 회원정보 조회 (연령대, 성별)
+     * @param memberId 회원 ID
+     * @return 회원 정보 (연령대, 성별)
+     */
+    @Transactional
+    public MemberResponse.MemberStatistics getMemberStatistics(String memberId) {
+
+        Member targetMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        int ageRange;
+
+        LocalDate memberBirthDay = targetMember.getMemberBirthday();
+
+        LocalDate currentDate = LocalDate.now();
+        if ((memberBirthDay != null) && (currentDate != null)) {
+            int age = Period.between(memberBirthDay, currentDate).getYears();
+            ageRange = (age / 10) * 10;
+        } else {
+            ageRange = 0;
+        }
+
+        MemberResponse.MemberStatistics memberStatistics = MemberResponse.MemberStatistics.convertedBy(ageRange, targetMember.getGender());
+
+        return memberStatistics;
     }
 }

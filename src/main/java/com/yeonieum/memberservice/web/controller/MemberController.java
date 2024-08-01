@@ -210,9 +210,24 @@ public class MemberController {
     @GetMapping("/filter-map")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam(required = false) String memberName,
                                                        @RequestParam(required = false) String memberPhoneNumber) {
-        System.out.println(memberName);
+
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberService.getFilteredMemberInfoMap(memberName, memberPhoneNumber))
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(),HttpStatus.OK);
+    }
+
+    @Operation(summary = "통계자료에 필요한 회원정보 조회(연령대, 성별)", description = "통계자료에 필요한 회원 정보를 조회하는 기능입니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
+    })
+    @GetMapping("/statistics")
+    public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam String memberId) {
+
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(memberService.getMemberStatistics(memberId))
                 .successCode(SuccessCode.SELECT_SUCCESS)
                 .build(),HttpStatus.OK);
     }
