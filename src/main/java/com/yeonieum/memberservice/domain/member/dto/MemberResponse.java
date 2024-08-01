@@ -107,4 +107,18 @@ public class MemberResponse {
                     .collect(Collectors.toMap(Member::getMemberId, OrderMemberInfo::convertedBy));
         }
     }
+
+    @Getter
+    @Builder
+    public static class MemberStatistics {
+        int ageRange;
+        Gender gender;
+
+        public static MemberStatistics convertedBy(int ageRange, Gender gender) {
+            return MemberStatistics.builder()
+                    .ageRange(ageRange)
+                    .gender(gender)
+                    .build();
+        }
+    }
 }
