@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.web.controller;
 import com.yeonieum.memberservice.domain.address.dto.AddressRequest;
 import com.yeonieum.memberservice.domain.address.dto.AddressResponse;
 import com.yeonieum.memberservice.domain.address.service.AddressService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 배송지 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member-address/list", method = "GET")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberAddress(
             @RequestParam("memberId") String memberId,
@@ -54,6 +56,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 특정 배송지 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 특정 배송지 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}", method = "GET")
     @GetMapping("/{memberAddressId}")
     public ResponseEntity<ApiResponse> getMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
         AddressResponse.OfRetrieveMemberAddress memberAddress = addressService.getMemberAddressById(memberAddressId);
@@ -70,6 +73,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 배송지 등록 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 등록 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address", method = "POST")
     @PostMapping
     public ResponseEntity<ApiResponse> registerMemberAddresses(@Valid @RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -87,6 +91,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 배송지 삭제 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 삭제 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_ADMIN"}, url = "/api/member-address/{memberAddressId}/delete", method = "DELETE")
     @DeleteMapping("/{memberAddressId}/delete")
     public ResponseEntity<ApiResponse> deleteMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -104,6 +109,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 배송지 대표 배송지로 수정 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 대표 배송지로 수정 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}", method = "PUT")
     @PutMapping("/{memberAddressId}")
     public ResponseEntity<ApiResponse> modifyMemberAddress(
             @PathVariable("memberAddressId") Long memberAddressId,
@@ -126,6 +132,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 주소지 ID"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}/update", method = "DELETE")
     @PutMapping("/{memberAddressId}/update")
     public ResponseEntity<ApiResponse> updateMemberAddress(
             @PathVariable("memberAddressId") Long memberAddressId,

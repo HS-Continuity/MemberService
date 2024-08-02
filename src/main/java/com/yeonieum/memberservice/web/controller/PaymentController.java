@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.web.controller;
 import com.yeonieum.memberservice.domain.payment.dto.PaymentRequest;
 import com.yeonieum.memberservice.domain.payment.dto.PaymentResponse;
 import com.yeonieum.memberservice.domain.payment.service.PaymentService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +29,7 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 결제카드 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member-payment/list", method = "GET")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberPaymentCards(
             @RequestParam("memberId") String memberId,
@@ -47,6 +49,7 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 결제카드 등록 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 등록 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member-payment", method = "POST")
     @PostMapping
     public ResponseEntity<ApiResponse> registerMemberPaymentCards(@Valid @RequestBody PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -63,6 +66,7 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "회원 결제카드 삭제 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 삭제 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-payment/{memberPaymentCardId}", method = "DELETE")
     @DeleteMapping("/{memberPaymentCardId}")
     public ResponseEntity<ApiResponse> deleteMemberPaymentCard(@PathVariable("memberPaymentCardId") Long memberPaymentCardId) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -79,6 +83,7 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 결제카드 대표캬드로 수정 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 대표카드로 수정 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-payment/{memberPaymentCardId}", method = "PUT")
     @PutMapping("/{memberPaymentCardId}")
     public ResponseEntity<ApiResponse> modifyMemberPaymentCard(
             @PathVariable("memberPaymentCardId") Long memberPaymentCardId,

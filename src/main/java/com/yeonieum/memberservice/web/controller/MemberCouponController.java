@@ -2,6 +2,7 @@ package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.service.MemberCouponService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ public class MemberCouponController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 쿠폰 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 쿠폰 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-coupon/list", method = "GET")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -43,6 +45,7 @@ public class MemberCouponController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 쿠폰 사용 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 쿠헌 사용 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-coupon/use-state", method = "PUT")
     @PutMapping("/use-status")
     public ResponseEntity<ApiResponse> useMemberCouponStatus(@RequestParam("memberCouponId") Long memberCouponId) {
 

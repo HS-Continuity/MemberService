@@ -2,6 +2,7 @@ package com.yeonieum.memberservice.web.controller;
 
 import com.yeonieum.memberservice.domain.memberstore.dto.MemberStoreResponse;
 import com.yeonieum.memberservice.domain.memberstore.service.MemberStoreService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.enums.Gender;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
@@ -30,6 +31,7 @@ public class MemberStoreController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "고객 회원목록 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "고객 회원목록 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member-store/list/{customerId}", method = "GET")
     @GetMapping("/list/{customerId}")
     public ResponseEntity<ApiResponse> retrieveStoreMembers(@PathVariable("customerId") Long customerId,
                                                             @RequestParam(required = false) String memberId,
