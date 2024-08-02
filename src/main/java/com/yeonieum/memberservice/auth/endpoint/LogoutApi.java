@@ -6,6 +6,7 @@ import com.yeonieum.memberservice.auth.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,8 @@ import static com.yeonieum.memberservice.auth.util.JwtUtils.BEARER_PREFIX;
 public class LogoutApi {
     private final TokenService tokenService;
     private final JwtUtils jwtUtils;
+    @Value("${cors.allowed.origin}")
+    private String CORS_ALLOWED_ORIGIN;
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,
@@ -37,7 +40,7 @@ public class LogoutApi {
 
         tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken));
         tokenService.deleteRefreshToken(name);
-        response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain=localhost; HttpOnly; Max-Age=0; SameSite=None; Secure;");
+        response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain="+ CORS_ALLOWED_ORIGIN +"; HttpOnly; Max-Age=0; SameSite=None; Secure;");
 
         return ResponseEntity.ok().build();
     }

@@ -22,9 +22,9 @@ public class JwtUtils {
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String PROVIDER_TOKEN = "PROVIDER_TOKEN";
+    @Value("${cors.allowed.origin}")
+    private String CORS_ALLOWED_ORIGIN;
 
-    @Value("${yeonieum.cors.domain}")
-    public String CORS_DOMAIN;
     @Value("${jwt.access-token-validation-time}")
     private long ACCESS_TOKEN_VALIDATION_TIME;
     @Value("${jwt.refresh-token-validation-time}")
@@ -89,7 +89,7 @@ public class JwtUtils {
     public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
         response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + ";" +
                                                                 "Path=/;" +
-                                                                "Domain=" + "localhost" + ";" +
+                                                                "Domain=" + CORS_ALLOWED_ORIGIN + ";" +
                                                                 "HttpOnly; " +
                                                                 "Max-Age=" + REFRESH_TOKEN_VALIDATION_TIME + ";" +
                                                                 "SameSite=None;" +
@@ -119,5 +119,9 @@ public class JwtUtils {
 
     public String getRole(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("role", String.class);
+    }
+
+    public String getUserName(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("username", String.class);
     }
 }

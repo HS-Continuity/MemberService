@@ -1,6 +1,10 @@
 package com.yeonieum.memberservice.auth.filter;
+import com.yeonieum.memberservice.auth.authenticaton.JwtAuthenticationToken;
+import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDetailsService;
+import com.yeonieum.memberservice.auth.userdetails.CustomUserDto;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
+import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -70,6 +75,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // [STEP3] 추출한 토큰이 유효한지 여부를 체크합니다.
                 if (jwtUtils.validateToken(token)) {
                     // [STEP4] 토큰을 기반으로 사용자 아이디를 반환 받는 메서드
+                    CustomUserDetails customUserDetails = new CustomUserDetails(CustomUserDto.builder()
+                            .role(Role.valueOf(jwtUtils.getRole(token)))
+                            .username(jwtUtils.getUserName(token))
+                            .acceessToken(token)
+                            .password("")
+                            .build());
+
+                    JwtAuthenticationToken authentication =
+                            new JwtAuthenticationToken(customUserDetails, customUserDetails.getPassword(), customUserDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+
                     filterChain.doFilter(request, response);
                 } else {
                     response.setContentType("application/json");
