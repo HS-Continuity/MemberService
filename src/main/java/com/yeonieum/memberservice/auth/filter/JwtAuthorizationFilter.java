@@ -18,8 +18,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
-    private final CustomUserDetailsService userDetailsService;
-
     private final JwtUtils jwtUtils;
     private AntPathMatcher pathMatcher = new AntPathMatcher();
     private List<String> excludeUrlPatterns = new ArrayList<>(Arrays.asList(
@@ -46,7 +44,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        System.out.println(excludeUrlPatterns.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI())));
         return excludeUrlPatterns.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
     }
 
