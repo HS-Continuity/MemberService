@@ -20,5 +20,3 @@ eureka :
     fetchRegistry : true
     serviceUrl :
       defaultZone : http://54.180.108.102:8070/eureka/ # eureka 서버 주소
-
-
