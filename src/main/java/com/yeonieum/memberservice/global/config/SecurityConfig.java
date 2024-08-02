@@ -89,21 +89,21 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json", "Authorization", "Bearer"));
-        corsConfiguration.addExposedHeader("Bearer");
-        corsConfiguration.addExposedHeader("Authorization");
-        corsConfiguration.addExposedHeader("provider");
-        corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:5174", CORS_ALLOWED_ORIGIN));
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        return source;
-    }
+//    @Bean
+//    CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//        corsConfiguration.setAllowCredentials(true);
+//        corsConfiguration.setAllowedHeaders(List.of("Content-Type", "application/json", "Authorization", "Bearer"));
+//        corsConfiguration.addExposedHeader("Bearer");
+//        corsConfiguration.addExposedHeader("Authorization");
+//        corsConfiguration.addExposedHeader("provider");
+//        corsConfiguration.addAllowedOriginPattern("*");
+//        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:5174", CORS_ALLOWED_ORIGIN));
+//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", corsConfiguration);
+//        return source;
+//    }
 
     @Bean
     public AuthenticationManager getAuthenticationManger() {
