@@ -110,7 +110,7 @@ public class MemberAddressController {
             @RequestParam("memberId") String memberId) {
 
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
-        addressService.modifyMemberAddress(memberAddressId, member);
+        addressService.modifyMemberAddress(member, memberAddressId);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
