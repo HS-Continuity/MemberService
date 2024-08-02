@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.global.config;
 
+import com.yeonieum.memberservice.auth.filter.JwtAuthorizationFilter;
 import com.yeonieum.memberservice.auth.filter.JwtLoginFilter;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationFailureHandler;
 import com.yeonieum.memberservice.auth.handler.JwtAuthenticationSuccessHandler;
@@ -40,6 +41,8 @@ public class SecurityConfig {
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
+    @Value("${cors.allowed.origin}")
+    private final String CORS_ALLOWED_ORIGIN;
     private final PasswordEncoderConfig passwordEncoderConfig;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
@@ -55,6 +58,9 @@ public class SecurityConfig {
 
         http.
                 httpBasic(AbstractHttpConfigurer::disable); // Basic 비활성화
+        http.
+                addFilterBefore(new JwtAuthorizationFilter(jwtUtils), UsernamePasswordAuthenticationFilter.class);
+
         http.
                 addFilterAt(new JwtLoginFilter(jwtAuthenticationSuccessHandler, jwtAuthenticationFailureHandler, getAuthenticationManger(), jwtUtils), UsernamePasswordAuthenticationFilter.class);
         http.
@@ -92,7 +98,7 @@ public class SecurityConfig {
         corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addExposedHeader("provider");
         corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:5174", CORS_ALLOWED_ORIGIN));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
