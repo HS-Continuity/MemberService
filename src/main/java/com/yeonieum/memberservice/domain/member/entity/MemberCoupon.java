@@ -38,8 +38,8 @@ public class MemberCoupon {
     @Builder.Default
     private ActiveStatus isUsed = ActiveStatus.INACTIVE;
 
-    @Column(name = "expiration_date", nullable = false)
-    private LocalDate expirationDate;
-
+    public void changeUseStatus(ActiveStatus isUsed) {
+        this.isUsed = isUsed;
+    }
 }
 

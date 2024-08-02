@@ -12,7 +12,7 @@ title : KAN-000 feat: 소셜 로그인 기능 구현
 
 ## #️⃣관련 이슈
 
-- jira 이슈번호
+- jira issue번호
 
 ## 📝세부 작업 내용
 

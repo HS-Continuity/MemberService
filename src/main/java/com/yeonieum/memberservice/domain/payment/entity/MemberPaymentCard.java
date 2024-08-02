@@ -52,5 +52,14 @@ public class MemberPaymentCard {
     @Builder.Default
     private ActiveStatus isSimplePaymentAgreed = ActiveStatus.INACTIVE;
 
+    @Convert(converter = ActiveStatusConverter.class)
+    @Column(name = "is_default_payment_card", nullable = false)
+    @Builder.Default
+    private ActiveStatus isDefaultPaymentCard = ActiveStatus.INACTIVE;
+
+    public void changeIsDefaultPaymentCard(ActiveStatus isDefaultPaymentCard) {
+        this.isDefaultPaymentCard = isDefaultPaymentCard;
+    }
 }
+
 

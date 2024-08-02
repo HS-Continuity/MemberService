@@ -1,6 +1,9 @@
 package com.yeonieum.memberservice.global.responses.code;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -22,5 +25,20 @@ public enum SuccessCode {
         this.status = status;
         this.code = code;
         this.message = message;
+    }
+
+    @JsonCreator
+    public static SuccessCode fromCode(String code) {
+        for (SuccessCode successCode : SuccessCode.values()) {
+            if (successCode.code.equals(code)) {
+                return successCode;
+            }
+        }
+        throw new IllegalArgumentException("Unknown enum code: " + code);
+    }
+
+    @JsonValue
+    public String getCode() {
+        return code;
     }
 }

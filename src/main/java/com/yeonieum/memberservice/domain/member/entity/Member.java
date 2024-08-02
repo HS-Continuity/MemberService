@@ -3,10 +3,13 @@ package com.yeonieum.memberservice.domain.member.entity;
 import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.payment.entity.MemberPaymentCard;
+import com.yeonieum.memberservice.global.auditing.BaseEntity;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.GenderConverter;
+import com.yeonieum.memberservice.global.converter.RoleConverter;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
 import com.yeonieum.memberservice.global.enums.Gender;
+import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "member")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")
@@ -45,6 +48,10 @@ public class Member {
     @Column(nullable = false)
     private Gender gender;
 
+    @Convert(converter = RoleConverter.class)
+    @Column(nullable = false)
+    private Role role;
+
     @Convert(converter = ActiveStatusConverter.class)
     @Column(name = "is_deleted", nullable = false)
     @Builder.Default
@@ -55,7 +62,8 @@ public class Member {
     private List<MemberAddress> addressList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MemberPaymentCard> paymentCardList ;
+    @Builder.Default
+    private List<MemberPaymentCard> paymentCardList = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -65,4 +73,31 @@ public class Member {
     @Builder.Default
     private List<MemberStore> memberStoreList = new ArrayList<>();
 
+    public void changeMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public void changeMemberEmail(String memberEmail) {
+        this.memberEmail = memberEmail;
+    }
+
+    public void changeMemberPassword(String newPassword) {
+        this.memberPassword = newPassword;
+    }
+
+    public void changeMemberBirthday(LocalDate memberBirthday) {
+        this.memberBirthday = memberBirthday;
+    }
+
+    public void changeMemberPhoneNumber(String memberPhoneNumber) {
+        this.memberPhoneNumber = memberPhoneNumber;
+    }
+
+    public void changeGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void changeIsDeleted(ActiveStatus isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }
