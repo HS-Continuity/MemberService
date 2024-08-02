@@ -1,5 +1,6 @@
 package com.yeonieum.memberservice.web.controller;
 
+import com.yeonieum.memberservice.domain.member.service.MemberService;
 import com.yeonieum.memberservice.domain.sms.dto.SmsRequest;
 import com.yeonieum.memberservice.domain.sms.service.SmsVarificationService;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class SmsVerificationController {
     DefaultMessageService defaultMessageService;
     private final SmsVarificationService smsVarificationService;
+    private final MemberService memberService;
 
     @Value("${sms.apiKey}")
     private String apiKey;
@@ -28,8 +30,9 @@ public class SmsVerificationController {
     @Value("${sms.apiUrl}")
     private String apiUrl;
 
-    public SmsVerificationController(SmsVarificationService smsVarificationService) {
+    public SmsVerificationController(SmsVarificationService smsVarificationService, MemberService memberService) {
         this.smsVarificationService = smsVarificationService;
+        this.memberService = memberService;
     }
 
     @PostConstruct
@@ -40,8 +43,16 @@ public class SmsVerificationController {
     // 인증번호 발송 API
     @PostMapping("/verification-code")
     public ResponseEntity<?> sendVerificationCode(@RequestBody SmsRequest smsRequest) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
-        defaultMessageService.send(smsVarificationService.writeVerificationCode(smsRequest));
-        return new ResponseEntity<>(HttpStatus.OK);
+        // 전화번호 중복 검사
+        try {
+            if (memberService.verifyPhoneNumber(smsRequest.getPhoneNumber())) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+            defaultMessageService.send(smsVarificationService.writeVerificationCode(smsRequest));
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/verify")

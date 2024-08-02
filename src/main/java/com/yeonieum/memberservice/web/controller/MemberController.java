@@ -57,6 +57,20 @@ public class MemberController {
                 .build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "아이디 중복 검사", description = "입력받은 아이디의 중복 여부를 검사합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "아이디 중복 검사 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @GetMapping("/check-id")
+    public ResponseEntity<ApiResponse> checkDuplicateId(@RequestParam String memberId) {
+        boolean isDuplicate = memberService.verifyMemberId(memberId);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(isDuplicate)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
     @Operation(summary = "현재 비밀번호 검증", description = "현재 비밀번호가 올바른지 검증하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "비밀번호 검증 성공"),
