@@ -20,3 +20,4 @@ echo "ECS_INSTANCE_IP_ADDRESS: ${ECS_INSTANCE_IP_ADDRESS}"
 echo "The application will start in ${APP_SLEEP}s..." && sleep ${APP_SLEEP}
 set -x
 exec java ${JAVA_OPTS} -noverify -XX:+AlwaysPreTouch -Djava.security.egd=file:/dev/./urandom -jar /yeonieum_memberservice.jar
+
