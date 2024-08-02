@@ -129,7 +129,7 @@ public class AddressService {
      * @return 주소지 수정 성공 여부
      */
     @Transactional
-    public boolean updateMemberAddress(Long memberAddressId,, String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+    public boolean updateMemberAddress(Long memberAddressId, String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
         MemberAddress targetMemberAddress = memberAddressRepository.findByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)
                 .orElseThrow(() -> new AddressException(ADDRESS_NOT_FOUND, HttpStatus.NOT_FOUND));
 
