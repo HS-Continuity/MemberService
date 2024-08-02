@@ -35,13 +35,13 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
 
 
-//        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
-//            throw new BadCredentialsException("Invalid password");
-//        }
-
-        if(!password.equals(userDetails.getPassword())) {
+        if(!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
+
+//        if(!password.equals(userDetails.getPassword())) {
+//            throw new BadCredentialsException("Invalid password");
+//        }
         return new JwtAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
     }
 
