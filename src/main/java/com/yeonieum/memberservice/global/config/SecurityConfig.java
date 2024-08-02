@@ -67,7 +67,7 @@ public class SecurityConfig {
                 sessionManagement((s) ->
                                         s.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.
-                authorizeHttpRequests((auth) -> auth.requestMatchers("/access-token","/api/auth/logout","/actuator/*","/api/member/join","/login", "/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
+                authorizeHttpRequests((auth) -> auth.requestMatchers("/memberservice/access-token","/api/auth/logout","/actuator/*","/memberservice/api/member/join","/login", "/memberservice/api/auth/login", "/oauth-login/logout", "/login/oauth2/code/*","/login-fail").permitAll()
                         .anyRequest().permitAll()); // 개발환경모드
 
         http.
