@@ -7,6 +7,7 @@ import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,7 +48,7 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 등록 실패")
     })
     @PostMapping
-    public ResponseEntity<ApiResponse> registerMemberPaymentCards(@RequestBody PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard) {
+    public ResponseEntity<ApiResponse> registerMemberPaymentCards(@Valid @RequestBody PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
         paymentService.registerMemberPaymentCard(member, ofRegisterMemberPaymentCard);
 

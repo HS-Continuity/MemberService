@@ -1,7 +1,9 @@
 package com.yeonieum.memberservice.domain.memberstore.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.entity.QMember;
 import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.memberstore.entity.QMemberStore;
@@ -34,16 +36,16 @@ public class MemberStoreRepositoryImpl implements MemberStoreRepositoryCustom {
 
 
         if (memberId != null) {
-            builder.and(joinedMember.memberId.eq(memberId));
+            builder.and(joinedMember.memberId.like("%" + memberId + "%"));
         }
         if (memberName != null) {
-            builder.and(joinedMember.memberName.eq(memberName));
+            builder.and(joinedMember.memberName.like("%" + memberName + "%"));
         }
         if (memberEmail != null) {
-            builder.and(joinedMember.memberEmail.eq(memberEmail));
+            builder.and(joinedMember.memberEmail.like("%" + memberEmail + "%"));
         }
         if (memberPhoneNumber != null) {
-            builder.and(joinedMember.memberPhoneNumber.eq(memberPhoneNumber));
+            builder.and(joinedMember.memberPhoneNumber.like("%" + memberPhoneNumber + "%"));
         }
         if (memberBirthday != null) {
             builder.and(joinedMember.memberBirthday.eq(memberBirthday));
@@ -66,5 +68,34 @@ public class MemberStoreRepositoryImpl implements MemberStoreRepositoryCustom {
                 .fetchCount();
 
         return new PageImpl<>(results, pageable, total);
+    }
+
+    @Override
+    public List<String> findMemberIdsByNamesAndPhoneNumber(String name, String phoneNumber) {
+        QMember member = QMember.member;
+
+        return queryFactory.select(member.memberId)
+                .from(member)
+                .where(
+                        name != null ? member.memberName.contains(name) : null,
+                        phoneNumber != null ? member.memberPhoneNumber.contains(phoneNumber) : null
+                )
+                .fetch();
+    }
+
+    @Override
+    public List<MemberResponse.OrderMemberInfo> findMembersByNamesAndPhoneNumber(String name, String phoneNumber) {
+        QMember member = QMember.member;
+
+        return queryFactory.select(Projections.constructor(MemberResponse.OrderMemberInfo.class,
+                member.memberId,
+                member.memberName,
+                member.memberPhoneNumber))
+                .from(member)
+                .where(
+                        name != null ? member.memberName.contains(name) : null,
+                        phoneNumber != null ? member.memberPhoneNumber.contains(phoneNumber) : null
+                )
+                .fetch();
     }
 }

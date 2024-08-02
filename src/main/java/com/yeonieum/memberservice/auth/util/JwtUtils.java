@@ -64,13 +64,14 @@ public class JwtUtils {
     public Map<String, String> createTokenForLogin(CustomUserDto customUserDto) {
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put(ACCESS_TOKEN, createToken(ACCESS_TOKEN, customUserDto));
-        tokenMap.put(REFRESH_TOKEN, createToken(REFRESH_TOKEN, customUserDto));
+        tokenMap.put(REFRESH_TOKEN, "Bearer" + createToken(REFRESH_TOKEN, customUserDto).substring(7));
 
         return tokenMap;
     }
 
     public boolean validateToken(String token) {
         try{
+            System.out.println("들어온;?");
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
@@ -86,9 +87,9 @@ public class JwtUtils {
     }
 
     public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
-        response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + "; " +
+        response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + ";" +
                                                                 "Path=/;" +
-                                                                "Domain=" + "localhost" + "; " +
+                                                                "Domain=" + "localhost" + ";" +
                                                                 "HttpOnly; " +
                                                                 "Max-Age=" + REFRESH_TOKEN_VALIDATION_TIME + ";" +
                                                                 "SameSite=None;" +
@@ -114,5 +115,8 @@ public class JwtUtils {
 
     public Claims parseToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+
+    public String getRole(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("role", String.class);
     }
 }

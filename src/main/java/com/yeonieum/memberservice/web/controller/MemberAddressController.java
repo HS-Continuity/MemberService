@@ -8,6 +8,8 @@ import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +71,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 등록 실패")
     })
     @PostMapping
-    public ResponseEntity<ApiResponse> registerMemberAddresses(@RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
+    public ResponseEntity<ApiResponse> registerMemberAddresses(@Valid @RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
         addressService.registerMemberAddress(member, ofRegisterMemberAddress);
 
@@ -127,7 +129,7 @@ public class MemberAddressController {
     @PutMapping("/{memberAddressId}/update")
     public ResponseEntity<ApiResponse> updateMemberAddress(
             @PathVariable("memberAddressId") Long memberAddressId,
-            @RequestBody AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+            @Valid @RequestBody AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
 
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
         boolean isUpdated = addressService.updateMemberAddress(memberAddressId, member, registerMemberAddress);
@@ -143,7 +145,6 @@ public class MemberAddressController {
                     .build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }
 
 

@@ -8,8 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.query.Order;
 
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MemberResponse {
 
@@ -83,11 +87,37 @@ public class MemberResponse {
         private String memberName;
         private String memberPhoneNumber;
 
+        public OrderMemberInfo (String memberId, String memberName, String memberPhoneNumber) {
+            this.memberId = memberId;
+            this.memberName = memberName;
+            this.memberPhoneNumber = memberPhoneNumber;
+        }
+
+
         public static OrderMemberInfo convertedBy(Member member) {
             return OrderMemberInfo.builder()
                     .memberId(member.getMemberId())
                     .memberName(member.getMemberName())
                     .memberPhoneNumber(member.getMemberPhoneNumber())
+                    .build();
+        }
+
+        public static Map<String, OrderMemberInfo> convertedMapBy(Set<Member> member) {
+            return member.stream()
+                    .collect(Collectors.toMap(Member::getMemberId, OrderMemberInfo::convertedBy));
+        }
+    }
+
+    @Getter
+    @Builder
+    public static class MemberStatistics {
+        int ageRange;
+        Gender gender;
+
+        public static MemberStatistics convertedBy(int ageRange, Gender gender) {
+            return MemberStatistics.builder()
+                    .ageRange(ageRange)
+                    .gender(gender)
                     .build();
         }
     }

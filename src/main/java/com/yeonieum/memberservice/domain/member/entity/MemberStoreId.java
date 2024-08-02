@@ -9,6 +9,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 public class MemberStoreId implements Serializable {
     private Long customerId;

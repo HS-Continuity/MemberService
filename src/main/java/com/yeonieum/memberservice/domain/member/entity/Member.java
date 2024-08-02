@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.domain.member.entity;
 import com.yeonieum.memberservice.domain.address.entity.MemberAddress;
 import com.yeonieum.memberservice.domain.memberstore.entity.MemberStore;
 import com.yeonieum.memberservice.domain.payment.entity.MemberPaymentCard;
+import com.yeonieum.memberservice.global.auditing.BaseEntity;
 import com.yeonieum.memberservice.global.converter.ActiveStatusConverter;
 import com.yeonieum.memberservice.global.converter.GenderConverter;
 import com.yeonieum.memberservice.global.converter.RoleConverter;
@@ -11,7 +12,6 @@ import com.yeonieum.memberservice.global.enums.Gender;
 import com.yeonieum.memberservice.global.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "member")
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @Column(name = "member_id")
