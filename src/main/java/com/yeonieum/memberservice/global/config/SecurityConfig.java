@@ -42,7 +42,7 @@ public class SecurityConfig {
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
     @Value("${cors.allowed.origin}")
-    private final String CORS_ALLOWED_ORIGIN;
+    private String CORS_ALLOWED_ORIGIN;
     private final PasswordEncoderConfig passwordEncoderConfig;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
