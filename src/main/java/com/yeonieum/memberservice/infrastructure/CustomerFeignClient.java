@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "productservice", configuration = FeignConfig.class)
 public interface CustomerFeignClient {
-    @GetMapping("/api/customer/auth/{businessNumber}")
+    @GetMapping("/productservice/api/customer/auth/{businessNumber}")
     ResponseEntity<ApiResponse<RetrieveCustomerResponse>> retrieveCustomerForAuth(@PathVariable("businessNumber") String businessNumber);
 }
