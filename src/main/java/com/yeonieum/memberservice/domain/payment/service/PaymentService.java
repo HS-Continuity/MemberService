@@ -68,12 +68,15 @@ public class PaymentService {
      * @return 결제카드 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberPaymentCard(PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard){
-
-        Member targetMember = memberRepository.findById(ofRegisterMemberPaymentCard.getMemberId())
+    public boolean registerMemberPaymentCard(String memberId, PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard){
+        Member targetMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(ofRegisterMemberPaymentCard.getMemberId());
+        List<MemberPaymentCard> existingCards = memberPaymentCardRepository.findByMember_MemberId(memberId);
+        if(existingCards == null){
+            existingCards = List.of();
+        }
+
         if (existingCards.size() >= 5) {
             throw new PaymentException(MAXIMUM_CARDS_EXCEEDED, HttpStatus.NOT_FOUND);
         }
@@ -107,8 +110,8 @@ public class PaymentService {
      * @return 결제카드 삭제 성공 여부
      */
     @Transactional
-    public boolean deleteMemberPaymentCard(Long memberPaymentCardId){
-        if(memberPaymentCardRepository.existsById(memberPaymentCardId)) {
+    public boolean deleteMemberPaymentCard(Long memberPaymentCardId, String memberId){
+        if(memberPaymentCardRepository.existsByMemberPaymentCardIdAndMember_MemberId(memberPaymentCardId, memberId)) {
             memberPaymentCardRepository.deleteById(memberPaymentCardId);
             return true;
         } else {

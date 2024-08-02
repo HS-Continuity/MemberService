@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class MemberController {
     })
     @PutMapping
     public ResponseEntity<ApiResponse> updateMember(@Valid @RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
         memberService.updateMember(memberId, request);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -113,7 +115,9 @@ public class MemberController {
     })
     @DeleteMapping
     public ResponseEntity<ApiResponse> deleteMember(@RequestParam String memberId) {
-        memberService.deleteMember(memberId);
+
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        memberService.deleteMember(member);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
                 .successCode(SuccessCode.DELETE_SUCCESS)

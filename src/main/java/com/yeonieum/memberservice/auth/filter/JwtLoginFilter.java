@@ -49,14 +49,11 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
                         request.getReader().lines().collect(Collectors.joining()), JsonMemberDto.class);
 
                 authentication =
-                        new JwtAuthenticationToken(memberDto.getUsername(), memberDto.getPassword());
+                        new JwtAuthenticationToken(memberDto.getUsername(), memberDto.getPassword(), memberDto.getRoleType());
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        } else {
-            authentication =
-                    new JwtAuthenticationToken(request.getParameter("username"), request.getParameter("password"));
         }
         //setDetails(request,authentication);
         return (JwtAuthenticationToken) authenticationManager.authenticate((JwtAuthenticationToken)authentication);
@@ -79,5 +76,6 @@ public class JwtLoginFilter extends UsernamePasswordAuthenticationFilter {
     private static class JsonMemberDto {
         String username;
         String password;
+        String roleType;
     }
 }

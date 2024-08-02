@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,10 +47,10 @@ public class PaymentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 결제카드 등록 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 결제카드 등록 실패")
     })
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ApiResponse> registerMemberPaymentCards(@Valid @RequestBody PaymentRequest.OfRegisterMemberPaymentCard ofRegisterMemberPaymentCard) {
-
-        paymentService.registerMemberPaymentCard(ofRegisterMemberPaymentCard);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        paymentService.registerMemberPaymentCard(member, ofRegisterMemberPaymentCard);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -64,7 +65,8 @@ public class PaymentController {
     })
     @DeleteMapping("/{memberPaymentCardId}")
     public ResponseEntity<ApiResponse> deleteMemberPaymentCard(@PathVariable("memberPaymentCardId") Long memberPaymentCardId) {
-        paymentService.deleteMemberPaymentCard(memberPaymentCardId);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        paymentService.deleteMemberPaymentCard(memberPaymentCardId, member);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -82,7 +84,8 @@ public class PaymentController {
             @PathVariable("memberPaymentCardId") Long memberPaymentCardId,
             @RequestParam("memberId") String memberId) {
 
-        paymentService.modifyMemberPaymentCard(memberId, memberPaymentCardId);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        paymentService.modifyMemberPaymentCard(member, memberPaymentCardId);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)

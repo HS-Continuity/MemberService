@@ -55,9 +55,11 @@ public class MemberCouponService {
      * @return
      */
     @Transactional
-    public boolean useMemberCouponStatus(Long memberCouponId) {
-        MemberCoupon memberCoupon = memberCouponRepository.findById(memberCouponId)
-                .orElseThrow(() -> new MemberException(MEMBER_COUPON_NOT_FOUND, HttpStatus.NOT_FOUND));
+    public boolean useMemberCouponStatus(Long memberCouponId, String memberId) {
+        MemberCoupon memberCoupon = memberCouponRepository.findByMemberCouponIdAndMember_MemberId(memberCouponId, memberId);
+        if(memberCoupon == null){
+            throw new MemberException(MEMBER_COUPON_NOT_FOUND, HttpStatus.NOT_FOUND);
+        }
 
         if (memberCoupon.getIsUsed().equals(ActiveStatus.ACTIVE)) {
             return false;

@@ -72,11 +72,11 @@ public class AddressService {
      * @return 주소지 등록 성공 여부
      */
     @Transactional
-    public boolean registerMemberAddress(AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
-        Member targetMember = memberRepository.findById(registerMemberAddress.getMemberId())
+    public boolean registerMemberAddress(String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+        Member targetMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(registerMemberAddress.getMemberId());
+        List<MemberAddress> existingAddresses = memberAddressRepository.findByMember_MemberId(memberId);
         if (existingAddresses.size() > 5) {
             throw new AddressException(MAXIMUM_ADDRESSES_EXCEEDED, HttpStatus.BAD_REQUEST);
         }
@@ -112,8 +112,8 @@ public class AddressService {
      * @return 주소지 삭제 성공 여부
      */
     @Transactional
-    public boolean deleteMemberAddress(Long memberAddressId) {
-        if(memberAddressRepository.existsById(memberAddressId)) {
+    public boolean deleteMemberAddress(Long memberAddressId, String memberId) {
+        if(memberAddressRepository.existsByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)) {
             memberAddressRepository.deleteById(memberAddressId);
             return true;
         } else {
@@ -129,8 +129,8 @@ public class AddressService {
      * @return 주소지 수정 성공 여부
      */
     @Transactional
-    public boolean updateMemberAddress(Long memberAddressId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
-        MemberAddress targetMemberAddress = memberAddressRepository.findById(memberAddressId)
+    public boolean updateMemberAddress(Long memberAddressId,, String memberId, AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
+        MemberAddress targetMemberAddress = memberAddressRepository.findByMemberAddressIdAndMember_MemberId(memberAddressId, memberId)
                 .orElseThrow(() -> new AddressException(ADDRESS_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         // 수정 후의 주소 정보가 이미 다른 주소지로 등록되어 있는지 확인

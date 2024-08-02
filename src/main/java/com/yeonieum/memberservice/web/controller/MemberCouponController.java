@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,9 +28,9 @@ public class MemberCouponController {
     })
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId) {
-
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons
-                = memberCouponService.retrieveMemberCoupons(memberId);
+                = memberCouponService.retrieveMemberCoupons(member);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberCoupons)
@@ -44,8 +45,10 @@ public class MemberCouponController {
     })
     @PutMapping("/use-status")
     public ResponseEntity<ApiResponse> useMemberCouponStatus(@RequestParam("memberCouponId") Long memberCouponId) {
+
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
         return new ResponseEntity<>(ApiResponse.builder()
-                .result(memberCouponService.useMemberCouponStatus(memberCouponId))
+                .result(memberCouponService.useMemberCouponStatus(memberCouponId, member))
                 .successCode(SuccessCode.UPDATE_SUCCESS)
                 .build(), HttpStatus.OK);
     }

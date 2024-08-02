@@ -8,6 +8,8 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -102,6 +104,17 @@ public class JwtUtils {
 
         return expirationDate.getTime() - currentTimeMillis;
     }
+
+    public String parsingToken(String token) {
+        if(StringUtils.hasText(token) && token.startsWith(BEARER_PREFIX)) {
+            return token.substring(7); // 베어러 접두사 제거 토큰 값 반환
+        }
+
+        throw new NullPointerException("Not Found JWT Value");
+    }
+
+    public Claims parseToken(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
 
     public String getRole(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().get("role", String.class);

@@ -9,12 +9,14 @@ import java.util.Collection;
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
+    private String role;
 
     //Before AuthenticationManager : 인증 전 인증객체
-    public JwtAuthenticationToken(Object principal, Object credentials) {
+    public JwtAuthenticationToken(Object principal, Object credentials, String role) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
+        this.role = role;
         setAuthenticated(false);
     }
 
@@ -55,5 +57,9 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
     public void eraseCredentials() {
         super.eraseCredentials();
         this.credentials = null;
+    }
+
+    public String getRole() {
+        return this.role;
     }
 }

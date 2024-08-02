@@ -23,8 +23,17 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         JwtAuthenticationToken jwtAuthenticationToken = (JwtAuthenticationToken) authentication;
         String username = (String) authentication.getPrincipal();
         String password = (String) jwtAuthenticationToken.getCredentials();
+        String role = (String) jwtAuthenticationToken.getRole();
+        System.out.println(role);
+        CustomUserDetails userDetails = null;
+        if(role.equals("ROLE_CUSTOMER")) {
+            userDetails = (CustomUserDetails) userDetailsService.loadCustomerByUniqueId(username);
+        } else if(role.equals("ROLE_MEMBER")) {
+            userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+        } else {
+            throw new BadCredentialsException("Invalid role");
+        }
 
-        CustomUserDetails userDetails =  (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid password");

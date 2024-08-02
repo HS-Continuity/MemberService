@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,8 +40,8 @@ public class MemberAddressController {
     public ResponseEntity<ApiResponse> retrieveMemberAddress(
             @RequestParam("memberId") String memberId,
             @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
-
-        List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(member, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberAddresses)
@@ -69,10 +70,10 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 배송지 등록 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 배송지 등록 실패")
     })
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<ApiResponse> registerMemberAddresses(@Valid @RequestBody AddressRequest.OfRegisterMemberAddress ofRegisterMemberAddress) {
-
-        addressService.registerMemberAddress(ofRegisterMemberAddress);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        addressService.registerMemberAddress(member, ofRegisterMemberAddress);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -88,7 +89,8 @@ public class MemberAddressController {
     })
     @DeleteMapping("/{memberAddressId}/delete")
     public ResponseEntity<ApiResponse> deleteMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
-        addressService.deleteMemberAddress(memberAddressId);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        addressService.deleteMemberAddress(memberAddressId, member);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -107,7 +109,8 @@ public class MemberAddressController {
             @PathVariable("memberAddressId") Long memberAddressId,
             @RequestParam("memberId") String memberId) {
 
-        addressService.modifyMemberAddress(memberId, memberAddressId);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        addressService.modifyMemberAddress(memberAddressId, member);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
@@ -128,7 +131,8 @@ public class MemberAddressController {
             @PathVariable("memberAddressId") Long memberAddressId,
             @Valid @RequestBody AddressRequest.OfRegisterMemberAddress registerMemberAddress) {
 
-        boolean isUpdated = addressService.updateMemberAddress(memberAddressId, registerMemberAddress);
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isUpdated = addressService.updateMemberAddress(memberAddressId, member, registerMemberAddress);
 
         if (isUpdated) {
             return new ResponseEntity<>(ApiResponse.builder()
