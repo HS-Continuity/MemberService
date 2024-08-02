@@ -1,7 +1,9 @@
 package com.yeonieum.memberservice.web.controller;
 
+import com.yeonieum.memberservice.domain.member.service.MemberService;
 import com.yeonieum.memberservice.domain.sms.dto.SmsRequest;
 import com.yeonieum.memberservice.domain.sms.service.SmsVarificationService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import jakarta.annotation.PostConstruct;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class SmsVerificationController {
     DefaultMessageService defaultMessageService;
     private final SmsVarificationService smsVarificationService;
+    private final MemberService memberService;
 
     @Value("${sms.apiKey}")
     private String apiKey;
@@ -28,8 +31,9 @@ public class SmsVerificationController {
     @Value("${sms.apiUrl}")
     private String apiUrl;
 
-    public SmsVerificationController(SmsVarificationService smsVarificationService) {
+    public SmsVerificationController(SmsVarificationService smsVarificationService, MemberService memberService) {
         this.smsVarificationService = smsVarificationService;
+        this.memberService = memberService;
     }
 
     @PostConstruct
@@ -38,12 +42,22 @@ public class SmsVerificationController {
     }
 
     // 인증번호 발송 API
+    @Role(role = {"*"}, url = "/api/sms/verification-code", method = "POST")
     @PostMapping("/verification-code")
     public ResponseEntity<?> sendVerificationCode(@RequestBody SmsRequest smsRequest) throws NurigoMessageNotReceivedException, NurigoEmptyResponseException, NurigoUnknownException {
-        defaultMessageService.send(smsVarificationService.writeVerificationCode(smsRequest));
-        return new ResponseEntity<>(HttpStatus.OK);
+        // 전화번호 중복 검사
+        try {
+            if (memberService.verifyPhoneNumber(smsRequest.getPhoneNumber())) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+            }
+            defaultMessageService.send(smsVarificationService.writeVerificationCode(smsRequest));
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
+    @Role(role = {"*"}, url = "/api/sms/verify", method = "GET")
     @GetMapping("/verify")
     public ResponseEntity<ApiResponse> verifyCode(@RequestParam String username, @RequestParam String code) {
         return new ResponseEntity<>(ApiResponse.builder()

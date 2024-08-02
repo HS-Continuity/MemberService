@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.web.controller;
 import com.yeonieum.memberservice.domain.member.dto.MemberRequest;
 import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.service.MemberService;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "회원 가입 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 가입 실패")
     })
+    @Role(role = {"*"}, url = "/api/member", method = "POST")
     @PostMapping
     public ResponseEntity<ApiResponse> registerMember(@Valid @RequestBody MemberRequest.RegisterMemberRequest request) {
         memberService.registerMember(request);
@@ -49,6 +51,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 수정 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member", method = "PUT")
     @PutMapping
     public ResponseEntity<ApiResponse> updateMember(@Valid @RequestParam String memberId, @RequestBody MemberRequest.UpdateMemberRequest request) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -59,12 +62,28 @@ public class MemberController {
                 .build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "아이디 중복 검사", description = "입력받은 아이디의 중복 여부를 검사합니다.")
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "아이디 중복 검사 성공"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
+    })
+    @Role(role = {"*"}, url = "/api/member/check-id", method = "GET")
+    @GetMapping("/check-id")
+    public ResponseEntity<ApiResponse> checkDuplicateId(@RequestParam String memberId) {
+        boolean isDuplicate = memberService.verifyMemberId(memberId);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .result(isDuplicate)
+                .successCode(SuccessCode.SELECT_SUCCESS)
+                .build(), HttpStatus.OK);
+    }
+
     @Operation(summary = "현재 비밀번호 검증", description = "현재 비밀번호가 올바른지 검증하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "비밀번호 검증 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 검증 실패")
     })
+    @Role(role = {"*"}, url = "/api/member/verify-password", method = "GET")
     @PostMapping("/verify-password")
     public ResponseEntity<ApiResponse> verifyPassword(@Valid @RequestBody MemberRequest.VerifyPasswordRequest request) {
         boolean isValid = memberService.verifyCurrentPassword(request.getMemberId(), request.getCurrentPassword());
@@ -81,6 +100,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "현재 비밀번호가 일치하지 않음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 변경 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member/change-password", method = "POST")
     @PostMapping("/change-password")
     public ResponseEntity<ApiResponse> changePassword(@Valid @RequestBody MemberRequest.ChangePasswordRequest request) {
         boolean success = memberService.changePassword(request.getMemberId(), request);
@@ -97,6 +117,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member", method = "GET")
     @GetMapping
     public ResponseEntity<ApiResponse> getMember(@RequestParam String memberId) {
         MemberResponse.RetrieveMemberDto member = memberService.getMember(memberId);
@@ -113,6 +134,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 탈퇴 처리 실패")
     })
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member", method = "GET")
     @DeleteMapping
     public ResponseEntity<ApiResponse> deleteMember(@RequestParam String memberId) {
 
@@ -131,6 +153,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/order", method = "GET")
     @GetMapping("/order")
     public ResponseEntity<ApiResponse> getOrderMemberInfo(@RequestParam String memberId) {
         MemberResponse.OrderMemberInfo targetMember = memberService.getOrderMemberInfo(memberId);
@@ -148,6 +171,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/list/order", method = "GET")
     @GetMapping("/list/order")
     public ResponseEntity<ApiResponse> getOrderMemberInfo(@RequestParam List<String> memberIds) {
         return new ResponseEntity<>(ApiResponse.builder()

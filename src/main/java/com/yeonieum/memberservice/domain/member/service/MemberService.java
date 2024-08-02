@@ -112,6 +112,24 @@ public class MemberService {
     }
 
     /**
+     * 아이디 중복 검사
+     * @param memberId 검사할 회원 ID
+     * @return 중복 여부 (true: 중복, false: 중복 아님)
+     */
+    public boolean verifyMemberId(String memberId) {
+        return memberRepository.findByMemberId(memberId).isPresent();
+    }
+
+    /**
+     * 전화번호 중복 검사
+     * @param phoneNumber 검사할 전화번호
+     * @return 중복 여부 (true: 중복, false: 중복 아님)
+     */
+    public boolean verifyPhoneNumber(String phoneNumber) {
+        return memberRepository.findByMemberPhoneNumber(phoneNumber).isPresent();
+    }
+
+    /**
      * 현재 비밀번호 검증
      * @param memberId 회원 ID
      * @param currentPassword 현재 비밀번호
