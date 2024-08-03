@@ -156,6 +156,7 @@ public class MemberController {
     @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/order", method = "GET")
     @GetMapping("/order")
     public ResponseEntity<ApiResponse> getOrderMemberInfo(@RequestParam String memberId) {
+        System.out.println("memberId = " + memberId);
         MemberResponse.OrderMemberInfo targetMember = memberService.getOrderMemberInfo(memberId);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(targetMember)
@@ -224,6 +225,7 @@ public class MemberController {
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse> getFilterMember(@RequestParam(required = false) String memberName,
                                                        @RequestParam(required = false) String memberPhoneNumber) {
+        System.out.println("customerfilter" );
         List<String> memberSummaries = memberService.getFilteredMemberIds(memberName, memberPhoneNumber);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberSummaries)
@@ -242,6 +244,7 @@ public class MemberController {
     @GetMapping("/filter-map")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam(required = false) String memberName,
                                                        @RequestParam(required = false) String memberPhoneNumber) {
+        System.out.println("customerfiltermap");
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberService.getFilteredMemberInfoMap(memberName, memberPhoneNumber))
@@ -258,6 +261,7 @@ public class MemberController {
     @Role(role = {"ROLE_CUSTOMER", "ROLE_ADMIN"}, url = "/api/member/statistics", method = "GET")
     @GetMapping("/statistics")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam String memberId) {
+        System.out.println("memberId = " + memberId);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberService.getMemberStatistics(memberId))

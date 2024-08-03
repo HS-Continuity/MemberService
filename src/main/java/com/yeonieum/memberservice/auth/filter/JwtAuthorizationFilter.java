@@ -78,6 +78,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 // [STEP3] 추출한 토큰이 유효한지 여부를 체크합니다.
                 if (jwtUtils.validateToken(token)) {
                     // [STEP4] 토큰을 기반으로 사용자 아이디를 반환 받는 메서드
+                    System.out.println("토큰 검증 성공");
                     CustomUserDetails customUserDetails = new CustomUserDetails(CustomUserDto.builder()
                             .role(Role.valueOf(jwtUtils.getRole(token)))
                             .username(jwtUtils.getUserName(token))

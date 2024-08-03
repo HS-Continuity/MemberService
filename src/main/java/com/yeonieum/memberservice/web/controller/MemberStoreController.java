@@ -45,6 +45,8 @@ public class MemberStoreController {
 
         Pageable pageable = PageRequest.of(startPage, pageSize);
         Long customer = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        System.out.println("customer = " + customer);
+
         Page<MemberStoreResponse.OfRetrieveMemberInformation> retrieveMemberInformations
                 = memberStoreService.retrieveStoreMembers(customerId, memberId, memberName, memberEmail, memberPhoneNumber, memberBirthday, gender, pageable);
 
