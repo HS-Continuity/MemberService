@@ -4,6 +4,7 @@ import com.yeonieum.memberservice.auth.service.TokenService;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDetails;
 import com.yeonieum.memberservice.auth.userdetails.CustomUserDetailsService;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
+import com.yeonieum.memberservice.global.auth.Role;
 import com.yeonieum.memberservice.global.responses.ApiResponse;
 import com.yeonieum.memberservice.global.responses.code.SuccessCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +33,7 @@ public class ReIssueAccessTokenApi {
     private final JwtUtils jwtUtils;
     private final CustomUserDetailsService userDetailsService;
     private final TokenService tokenService;
-
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/access-token", method = "GET")
     @GetMapping("/access-token")
     public ResponseEntity<?> reIssueAccessToken(@CookieValue(value = "REFRESH_TOKEN") String refreshToken,
                                                 HttpServletRequest reqeust) {

@@ -3,6 +3,7 @@ package com.yeonieum.memberservice.auth.endpoint;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.yeonieum.memberservice.auth.service.TokenService;
 import com.yeonieum.memberservice.auth.util.JwtUtils;
+import com.yeonieum.memberservice.global.auth.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class LogoutApi {
     private final JwtUtils jwtUtils;
     @Value("${cors.allowed.origin}")
     private String CORS_ALLOWED_ORIGIN;
-
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/auth/logout", method = "POST")
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,
                                     HttpServletResponse response) {
