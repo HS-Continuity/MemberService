@@ -56,7 +56,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 특정 배송지 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 특정 배송지 조회 실패")
     })
-    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}", method = "GET")
+    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member-address/{memberAddressId}", method = "GET")
     @GetMapping("/{memberAddressId}")
     public ResponseEntity<ApiResponse> getMemberAddress(@PathVariable("memberAddressId") Long memberAddressId) {
         AddressResponse.OfRetrieveMemberAddress memberAddress = addressService.getMemberAddressById(memberAddressId);
