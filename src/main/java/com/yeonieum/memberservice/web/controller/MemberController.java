@@ -175,6 +175,7 @@ public class MemberController {
     @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/list/order", method = "GET")
     @GetMapping("/list/order")
     public ResponseEntity<ApiResponse> getOrderMemberInfo(@RequestParam List<String> memberIds) {
+        System.out.println("memberIds = " + memberIds);
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(memberService.getOrderMemberInfoMap(memberIds))
                 .successCode(SuccessCode.SELECT_SUCCESS)
