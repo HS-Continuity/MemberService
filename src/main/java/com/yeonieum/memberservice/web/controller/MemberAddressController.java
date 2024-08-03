@@ -40,10 +40,10 @@ public class MemberAddressController {
     @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member-address/list", method = "GET")
     @GetMapping("/list")
     public ResponseEntity<ApiResponse> retrieveMemberAddress(
-            @RequestParam("memberId") String memberId,
+            @RequestParam(value = "memberId") String memberId,
             @RequestParam(value = "isDefault", required = false, defaultValue = "false") boolean isDefault) {
-        String member = SecurityContextHolder.getContext().getAuthentication().getName();
-        List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(member, isDefault);
+        //String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<AddressResponse.OfRetrieveMemberAddress> retrieveMemberAddresses = addressService.retrieveMemberAddresses(memberId, isDefault);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberAddresses)
