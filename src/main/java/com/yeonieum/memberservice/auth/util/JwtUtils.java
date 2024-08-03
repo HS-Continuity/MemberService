@@ -110,7 +110,7 @@ public class JwtUtils {
             return token.substring(7); // 베어러 접두사 제거 토큰 값 반환
         }
 
-        throw new NullPointerException("Not Found JWT Value");
+        else return token;
     }
 
     public Claims parseToken(String token) {
