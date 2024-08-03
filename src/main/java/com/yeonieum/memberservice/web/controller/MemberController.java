@@ -259,7 +259,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
-    @Role(role = {"ROLE_CUSTOMER", "ROLE_ADMIN"}, url = "/api/member/statistics", method = "GET")
+    @Role(role = {"ROLE_CUSTOMER", "ROLE_ADMIN", "ROLE_MEMBER"}, url = "/api/member/statistics", method = "GET")
     @GetMapping("/statistics")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam String memberId) {
         System.out.println("memberId = " + memberId);

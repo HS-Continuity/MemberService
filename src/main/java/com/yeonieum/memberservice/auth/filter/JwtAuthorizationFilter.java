@@ -47,7 +47,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             "/static/**",
             "/templates/**",
             "/actuator/*",
-            "/memberservice/api/permissions"
+            "/memberservice/api/permissions",
+            "/memberservice/access-token",
+            "/memberservice/api/auth/logout"
     ));
 
     @Override
