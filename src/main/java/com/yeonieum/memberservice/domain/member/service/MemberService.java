@@ -149,7 +149,7 @@ public class MemberService {
      */
     @Transactional
     public boolean changePassword(String memberId, MemberRequest.ChangePasswordRequest request) {
-        Member member = memberRepository.findByMemberId(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), member.getMemberPassword())) {
