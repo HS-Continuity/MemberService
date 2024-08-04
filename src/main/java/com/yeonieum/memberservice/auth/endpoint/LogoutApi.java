@@ -27,8 +27,11 @@ import static com.yeonieum.memberservice.auth.util.JwtUtils.BEARER_PREFIX;
 public class LogoutApi {
     private final TokenService tokenService;
     private final JwtUtils jwtUtils;
-    @Value("${cors.allowed.origin}")
-    private String CORS_ALLOWED_ORIGIN;
+    @Value("${cors.allowed.origin.yeonieum}")
+    private String CORS_ALLOWED_ORIGIN_YEONIEUM;
+
+    @Value("${cors.allowed.origin.dashboard}")
+    private String CORS_ALLOWED_ORIGIN_DASHBOARD;
     @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/auth/logout", method = "POST")
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request,
@@ -41,7 +44,8 @@ public class LogoutApi {
 
         tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken));
         tokenService.deleteRefreshToken(name);
-        response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain="+ CORS_ALLOWED_ORIGIN +"; HttpOnly; Max-Age=0; SameSite=None; Secure;");
+        String domain = jwtUtils.getRole(accessToken).equals("ROLE_MEMBER") ? CORS_ALLOWED_ORIGIN_DASHBOARD : CORS_ALLOWED_ORIGIN_YEONIEUM;
+        response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain="+ domain +"; HttpOnly; Max-Age=0; SameSite=None; Secure;");
 
         return ResponseEntity.ok().build();
     }

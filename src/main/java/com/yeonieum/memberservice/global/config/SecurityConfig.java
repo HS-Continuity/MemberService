@@ -41,8 +41,10 @@ public class SecurityConfig {
     private final JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtUtils jwtUtils;
-    @Value("${cors.allowed.origin}")
-    private String CORS_ALLOWED_ORIGIN;
+    @Value("${cors.allowed.origin.yeonieum}")
+    private String CORS_ALLOWED_ORIGIN_YEONIEUM;
+    @Value("${cors.allowed.origin.dashboard}")
+    private String CORS_ALLOWED_ORIGIN_DASHBOARD;
     private final PasswordEncoderConfig passwordEncoderConfig;
     private final OAuth2LogoutHandler oAuth2LogoutHandler;
 
@@ -98,7 +100,7 @@ public class SecurityConfig {
         corsConfiguration.addExposedHeader("Authorization");
         corsConfiguration.addExposedHeader("provider");
         corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:5174", CORS_ALLOWED_ORIGIN));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:5174", CORS_ALLOWED_ORIGIN_DASHBOARD, CORS_ALLOWED_ORIGIN_YEONIEUM));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

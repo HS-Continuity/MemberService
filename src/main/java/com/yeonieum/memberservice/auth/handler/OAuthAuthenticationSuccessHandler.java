@@ -34,7 +34,7 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
         CustomUserDetails userDetails = (CustomUserDetails)((OAuth2AuthenticationToken)authentication).getPrincipal();
 
         Map<String, String> tokenMap = jwtUtils.createTokenForLogin(userDetails.getCustomUserDto());
-        jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN));
+        //jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN));
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenMap.get(ACCESS_TOKEN));
 
         // 영속화 추가
