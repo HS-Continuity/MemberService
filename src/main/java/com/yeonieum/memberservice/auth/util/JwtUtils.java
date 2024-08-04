@@ -94,7 +94,7 @@ public class JwtUtils {
         System.out.println(domain);
         response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + ";" +
                                                                 "Path=/;" +
-                                                                "Domain=" + "yeonieum.com" + ";" +
+                                                                "Domain=" + domain + ";" +
                                                                 "HttpOnly; " +
                                                                 "Max-Age=" + REFRESH_TOKEN_VALIDATION_TIME + ";" +
                                                                 "SameSite=None;" +
