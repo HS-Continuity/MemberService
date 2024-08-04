@@ -44,7 +44,7 @@ public class LogoutApi {
 
         tokenService.revokeAccessToken(accessToken, jwtUtils.getRemainingExpirationTime(accessToken));
         tokenService.deleteRefreshToken(name);
-        String domain = jwtUtils.getRole(accessToken).equals("ROLE_MEMBER") ? CORS_ALLOWED_ORIGIN_DASHBOARD : CORS_ALLOWED_ORIGIN_YEONIEUM;
+        String domain = jwtUtils.getRole(accessToken).equals("ROLE_MEMBER") ? CORS_ALLOWED_ORIGIN_YEONIEUM : CORS_ALLOWED_ORIGIN_DASHBOARD;
         response.setHeader("Set-Cookie", "REFRESH_TOKEN=; Path=/; Domain="+ domain +"; HttpOnly; Max-Age=0; SameSite=None; Secure;");
 
         return ResponseEntity.ok().build();
