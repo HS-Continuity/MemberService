@@ -136,7 +136,7 @@ public class MemberService {
      * @return 비밀번호 일치 여부
      */
     public boolean verifyCurrentPassword(String memberId, String currentPassword) {
-        Member member = memberRepository.findByMemberId(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
         return passwordEncoder.matches(currentPassword, member.getMemberPassword());
     }
