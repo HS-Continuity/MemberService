@@ -17,10 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -43,7 +39,6 @@ public class MemberController {
                 .successCode(SuccessCode.INSERT_SUCCESS)
                 .build(), HttpStatus.CREATED);
     }
-
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보를 수정하는 기능입니다.")
     @ApiResponses({
@@ -110,7 +105,6 @@ public class MemberController {
                 .build(), HttpStatus.OK);
     }
 
-
     @Operation(summary = "회원 정보 조회", description = "회원 정보를 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
@@ -146,7 +140,6 @@ public class MemberController {
                 .build(), HttpStatus.OK);
     }
 
-
     @Operation(summary = "주문 서비스에 필요한 회원 정보 조회", description = "주문 서비스에 필요한 회원 정보를 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
@@ -164,7 +157,6 @@ public class MemberController {
 
     }
 
-
     @Operation(summary = "주문 서비스에 필요한 회원 정보 벌크 조회", description = "주문 서비스에 필요한 회원 정보를 벌크 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
@@ -181,13 +173,13 @@ public class MemberController {
 
     }
 
-
     @Operation(summary = "회원의 요약 정보 조회", description = "회원의 요약 정보를 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member/summary", method = "GET")
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse> getMemberSummary(@RequestParam String memberId) {
         MemberResponse.RetrieveSummary memberSummary = memberService.getMemberSummary(memberId);
@@ -203,6 +195,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member/summaries", method = "GET")
     @GetMapping("/summaries")
     public ResponseEntity<ApiResponse> getMemberSummaries(@RequestParam List<String> memberIds) {
         List<MemberResponse.OrderMemberInfo> memberSummaries = memberService.getMemberSummaries(memberIds);
@@ -218,6 +211,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member/filter", method = "GET")
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse> getFilterMember(@RequestParam(required = false) String memberName,
                                                        @RequestParam(required = false) String memberPhoneNumber) {
@@ -228,13 +222,13 @@ public class MemberController {
                 .build(),HttpStatus.OK);
     }
 
-
     @Operation(summary = "회원들의 이름과 휴대전화로 필터링된 회원 정보 조회", description = "회원들의 이름과 휴대전화로 필터링된 회원 정보를 조회하는 기능입니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "회원 정보 조회 성공"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member/filter-map", method = "GET")
     @GetMapping("/filter-map")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam(required = false) String memberName,
                                                        @RequestParam(required = false) String memberPhoneNumber) {
@@ -251,6 +245,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
+    @Role(role = {"ROLE_CUSTOMER"}, url = "/api/member/statistics", method = "GET")
     @GetMapping("/statistics")
     public ResponseEntity<ApiResponse> getFilterMemberMap(@RequestParam String memberId) {
 
