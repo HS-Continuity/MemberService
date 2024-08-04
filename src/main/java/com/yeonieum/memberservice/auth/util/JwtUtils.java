@@ -91,7 +91,7 @@ public class JwtUtils {
 
     public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken, String role) {
         String domain = role.equals("ROLE_MEMBER") ? CORS_ALLOWED_ORIGIN_YEONIEUM : CORS_ALLOWED_ORIGIN_DASHBOARD;
-
+        System.out.println(domain);
         response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + ";" +
                                                                 "Path=/;" +
                                                                 "Domain=" + domain + ";" +
