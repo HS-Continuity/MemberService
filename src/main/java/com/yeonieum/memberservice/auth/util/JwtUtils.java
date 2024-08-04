@@ -22,8 +22,11 @@ public class JwtUtils {
     public static final String REFRESH_TOKEN = "REFRESH_TOKEN";
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     public static final String PROVIDER_TOKEN = "PROVIDER_TOKEN";
-    @Value("${cors.allowed.origin}")
-    private String CORS_ALLOWED_ORIGIN;
+
+    @Value("${cors.allowed.origin.yeonieum}")
+    private String CORS_ALLOWED_ORIGIN_YEONIEUM;
+    @Value("${cors.allowed.origin.dashboard}")
+    private String CORS_ALLOWED_ORIGIN_DASHBOARD;
 
     @Value("${jwt.access-token-validation-time}")
     private long ACCESS_TOKEN_VALIDATION_TIME;
@@ -86,10 +89,12 @@ public class JwtUtils {
         return false;
     }
 
-    public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken) {
+    public HttpServletResponse addRefreshTokenToHttpOnlyCookie(HttpServletResponse response, String refreshToken, String role) {
+        String domain = role.equals("ROLE_MEMBER") ? CORS_ALLOWED_ORIGIN_YEONIEUM : CORS_ALLOWED_ORIGIN_DASHBOARD;
+
         response.setHeader("Set-Cookie", REFRESH_TOKEN +"=" + refreshToken + ";" +
                                                                 "Path=/;" +
-                                                                "Domain=" + CORS_ALLOWED_ORIGIN + ";" +
+                                                                "Domain=" + domain + ";" +
                                                                 "HttpOnly; " +
                                                                 "Max-Age=" + REFRESH_TOKEN_VALIDATION_TIME + ";" +
                                                                 "SameSite=None;" +

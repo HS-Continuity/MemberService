@@ -38,7 +38,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         response.setHeader(HttpHeaders.AUTHORIZATION, tokenMap.get(ACCESS_TOKEN));
         response.setContentType("application/json");
-        response = jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN));
+        response = jwtUtils.addRefreshTokenToHttpOnlyCookie(response, tokenMap.get(REFRESH_TOKEN), customUserDetails.getCustomUserDto().getRole().getRoleType());
         response.setStatus(HttpStatus.OK.value());
         response.flushBuffer();
     }
