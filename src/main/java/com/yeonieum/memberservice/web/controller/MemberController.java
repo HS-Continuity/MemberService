@@ -87,6 +87,7 @@ public class MemberController {
     @PostMapping("/verify-password")
     public ResponseEntity<ApiResponse> verifyPassword(@Valid @RequestBody MemberRequest.VerifyPasswordRequest request) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(member);
         boolean isValid = memberService.verifyCurrentPassword(member, request.getCurrentPassword());
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(isValid)

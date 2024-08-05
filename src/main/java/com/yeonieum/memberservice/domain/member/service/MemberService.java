@@ -138,6 +138,7 @@ public class MemberService {
     public boolean verifyCurrentPassword(String memberId, String currentPassword) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        System.out.println("currentPassword : " + currentPassword);
         return passwordEncoder.matches(currentPassword, member.getMemberPassword());
     }
 
