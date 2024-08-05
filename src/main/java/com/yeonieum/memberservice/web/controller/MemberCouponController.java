@@ -29,10 +29,10 @@ public class MemberCouponController {
     })
     @Role(role = {"ROLE_MEMBER"}, url = "/api/member-coupon/list", method = "GET")
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId) {
+    public ResponseEntity<ApiResponse> retrieveMemberCoupons(@RequestParam("memberId") String memberId, @RequestParam("couponType") String couponType) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
         List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons
-                = memberCouponService.retrieveMemberCoupons(member);
+                = memberCouponService.retrieveMemberCoupons(member, couponType);
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(retrieveMemberCoupons)

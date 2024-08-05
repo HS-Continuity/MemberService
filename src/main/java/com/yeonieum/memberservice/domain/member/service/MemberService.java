@@ -1,9 +1,13 @@
 package com.yeonieum.memberservice.domain.member.service;
 
+import com.yeonieum.memberservice.domain.coupon.entity.Coupon;
+import com.yeonieum.memberservice.domain.coupon.repository.CouponRepository;
 import com.yeonieum.memberservice.domain.member.dto.MemberRequest;
 import com.yeonieum.memberservice.domain.member.dto.MemberResponse;
 import com.yeonieum.memberservice.domain.member.entity.Member;
+import com.yeonieum.memberservice.domain.member.entity.MemberCoupon;
 import com.yeonieum.memberservice.domain.member.exception.MemberException;
+import com.yeonieum.memberservice.domain.member.repository.MemberCouponRepository;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
 import com.yeonieum.memberservice.domain.memberstore.repository.MemberStoreRepositoryImpl;
 import com.yeonieum.memberservice.global.enums.ActiveStatus;
@@ -34,6 +38,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final MemberStoreRepositoryImpl memberStoreRepositoryImpl;
+    private final MemberCouponRepository memberCouponRepository;
+    private final CouponRepository couponRepository;
 
     /**
      * 회원 가입 기능
@@ -56,7 +62,6 @@ public class MemberService {
         if (memberRepository.findByMemberPhoneNumber(request.getMemberPhoneNumber()).isPresent()) {
             throw new MemberException(PHONE_NUMBER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
-        System.out.println("들어오니?");
         Member member = Member.builder()
                 .memberId(request.getMemberId())
                 .memberName(request.getMemberName())
@@ -70,7 +75,13 @@ public class MemberService {
 
        memberRepository.save(member);
 
-        return true;
+       Coupon coupon = couponRepository.findById(1L).get();
+       MemberCoupon memberCoupon = MemberCoupon.builder()
+                .member(member)
+                .coupon(coupon)
+                .build();
+       memberCouponRepository.save(memberCoupon);
+       return true;
     }
 
     /**

@@ -26,5 +26,8 @@ public class Coupon {
 
     @Column(name = "expiration_date", nullable = false)
     private LocalDate expirationDate;
+
+    @Column(name = "coupon_type", nullable = false)
+    private String couponType;
 }
 

@@ -32,7 +32,7 @@ public class MemberCouponService {
      * @return 회원의 쿠폰 목록
      */
     @Transactional
-    public List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons (String memberId){
+    public List<MemberResponse.OfRetrieveMemberCoupon> retrieveMemberCoupons (String memberId, String couponType) {
 
         if(!memberRepository.existsById(memberId)){
             throw new MemberException(MEMBER_NOT_FOUND, HttpStatus.NOT_FOUND);
@@ -41,7 +41,7 @@ public class MemberCouponService {
         LocalDate currentDate = LocalDate.now();
 
         //쿠폰의 유효기간이 지난 것은 조회 되지 않음
-        List<MemberCoupon> memberCouponList = memberCouponRepository.findActiveCouponsByMemberId(memberId, currentDate);
+        List<MemberCoupon> memberCouponList = memberCouponRepository.findActiveCouponsByMemberId(memberId, currentDate, couponType);
 
         return memberCouponList.stream()
                 .map(MemberResponse.OfRetrieveMemberCoupon::convertedBy)
