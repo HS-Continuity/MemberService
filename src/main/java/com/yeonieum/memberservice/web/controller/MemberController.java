@@ -192,7 +192,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
-    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/summary", method = "GET")
+    @Role(role = {"*"}, url = "/api/member/summary", method = "GET")
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse> getMemberSummary(@RequestParam String memberId) {
         MemberResponse.RetrieveSummary memberSummary = memberService.getMemberSummary(memberId);
@@ -208,7 +208,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "회원 정보 조회 실패")
     })
-    @Role(role = {"ROLE_MEMBER", "ROLE_CUSTOMER"}, url = "/api/member/summaries", method = "GET")
+    @Role(role = {"*"}, url = "/api/member/summaries", method = "GET")
     @GetMapping("/summaries")
     public ResponseEntity<ApiResponse> getMemberSummaries(@RequestParam List<String> memberIds) {
         List<MemberResponse.OrderMemberInfo> memberSummaries = memberService.getMemberSummaries(memberIds);

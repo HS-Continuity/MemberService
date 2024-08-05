@@ -50,7 +50,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             "/memberservice/api/permissions",
             "/memberservice/access-token",
             "/memberservice/api/auth/logout",
-            "/memberservice/api/member/check-id"
+            "/memberservice/api/member/check-id",
+            "/memberservice/api/member/summary",
+            "/memberservice/api/member/summaries",
+            ""
     ));
 
     @Override
