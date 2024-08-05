@@ -83,7 +83,7 @@ public class MemberController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "회원을 찾을 수 없음"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "비밀번호 검증 실패")
     })
-    @Role(role = {"*"}, url = "/api/member/verify-password", method = "GET")
+    @Role(role = {"*"}, url = "/api/member/verify-password", method = "POST")
     @PostMapping("/verify-password")
     public ResponseEntity<ApiResponse> verifyPassword(@Valid @RequestBody MemberRequest.VerifyPasswordRequest request) {
         String member = SecurityContextHolder.getContext().getAuthentication().getName();
