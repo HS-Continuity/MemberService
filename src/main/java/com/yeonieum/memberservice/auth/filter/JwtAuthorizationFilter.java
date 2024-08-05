@@ -53,7 +53,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             "/memberservice/api/member/check-id",
             "/memberservice/api/member/summary",
             "/memberservice/api/member/summaries",
-            "/memberservice/api/sms**"
+            "/memberservice/api/sms/**"
     ));
 
     @Override
