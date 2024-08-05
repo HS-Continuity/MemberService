@@ -56,7 +56,7 @@ public class MemberService {
         if (memberRepository.findByMemberPhoneNumber(request.getMemberPhoneNumber()).isPresent()) {
             throw new MemberException(PHONE_NUMBER_ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
-
+        System.out.println("들어오니?");
         Member member = Member.builder()
                 .memberId(request.getMemberId())
                 .memberName(request.getMemberName())

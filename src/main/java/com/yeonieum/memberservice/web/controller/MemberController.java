@@ -36,7 +36,9 @@ public class MemberController {
     @Role(role = {"*"}, url = "/api/member", method = "POST")
     @PostMapping
     public ResponseEntity<ApiResponse> registerMember(@Valid @RequestBody MemberRequest.RegisterMemberRequest request) {
+        System.out.println("요청");
         memberService.registerMember(request);
+        System.out.println("응답");
 
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(null)
