@@ -86,7 +86,8 @@ public class MemberController {
     @Role(role = {"*"}, url = "/api/member/verify-password", method = "GET")
     @PostMapping("/verify-password")
     public ResponseEntity<ApiResponse> verifyPassword(@Valid @RequestBody MemberRequest.VerifyPasswordRequest request) {
-        boolean isValid = memberService.verifyCurrentPassword(request.getMemberId(), request.getCurrentPassword());
+        String member = SecurityContextHolder.getContext().getAuthentication().getName();
+        boolean isValid = memberService.verifyCurrentPassword(member, request.getCurrentPassword());
         return new ResponseEntity<>(ApiResponse.builder()
                 .result(isValid)
                 .successCode(SuccessCode.SELECT_SUCCESS)
