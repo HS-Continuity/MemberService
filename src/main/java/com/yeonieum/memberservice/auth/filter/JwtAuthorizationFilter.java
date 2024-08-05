@@ -26,7 +26,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private AntPathMatcher pathMatcher = new AntPathMatcher();
     private List<String> excludeUrlPatterns = new ArrayList<>(Arrays.asList(
-            "/api/member",
+            "/memberservice/api/member",
             "/login-fail",
             "/login/oauth2/code/*",
             "/oauth-login/logout",
