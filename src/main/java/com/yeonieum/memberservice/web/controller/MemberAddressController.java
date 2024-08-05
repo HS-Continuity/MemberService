@@ -132,7 +132,7 @@ public class MemberAddressController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "존재하지 않는 주소지 ID"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "500", description = "서버 오류")
     })
-    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}/update", method = "DELETE")
+    @Role(role = {"ROLE_MEMBER"}, url = "/api/member-address/{memberAddressId}/update", method = "PUT")
     @PutMapping("/{memberAddressId}/update")
     public ResponseEntity<ApiResponse> updateMemberAddress(
             @PathVariable("memberAddressId") Long memberAddressId,
