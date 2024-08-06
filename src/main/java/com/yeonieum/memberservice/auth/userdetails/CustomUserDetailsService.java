@@ -56,10 +56,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return new CustomUserDetails(customUserDto);
     }
 
-    public UserDetails loadCustomerById(Long customerId) {
+    public UserDetails loadCustomerById(String customerId) {
         ResponseEntity<ApiResponse<RetrieveCustomerResponse>> response = null;
         try {
-            response = customerFeignClient.retrieveCustomerForAuthId(customerId);
+            response = customerFeignClient.retrieveCustomerForAuthId(Long.valueOf(customerId));
         } catch (FeignException e) {
             e.printStackTrace();
             throw new UsernameNotFoundException("Not Found CustomerId");
