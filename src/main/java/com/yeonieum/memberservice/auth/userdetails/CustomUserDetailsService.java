@@ -55,4 +55,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new CustomUserDetails(customUserDto);
     }
+
+    public UserDetails loadCustomerById(Long customerId) {
+        ResponseEntity<ApiResponse<RetrieveCustomerResponse>> response = null;
+        try {
+            response = customerFeignClient.retrieveCustomerForAuthId(customerId);
+        } catch (FeignException e) {
+            e.printStackTrace();
+            throw new UsernameNotFoundException("Not Found CustomerId");
+        }
+        if(!response.getStatusCode().is2xxSuccessful()) {
+            throw new UsernameNotFoundException("Not Found CustomerId");
+        }
+
+        RetrieveCustomerResponse customer = response.getBody().getResult();
+
+        CustomUserDto customUserDto = new CustomUserDto();
+        customUserDto.setPassword(customer.getPassword());
+        customUserDto.setUsername(String.valueOf(customer.getCustomerId()));
+        customUserDto.setRole(Role.ROLE_CUSTOMER);
+
+        return new CustomUserDetails(customUserDto);
+    }
 }

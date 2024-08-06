@@ -51,7 +51,7 @@ public class ReIssueAccessTokenApi {
                 }
                 CustomUserDetails customUserDetails = null;
                 if(role.equals("ROLE_CUSTOMER")) {
-                    //customUserDetails = (CustomUserDetails) userDetailsService.loadCustomerByUniqueId(jwtUtils.extractUsername(refreshToken.substring(6)));
+                    customUserDetails = (CustomUserDetails) userDetailsService.loadCustomerByUniqueId(jwtUtils.extractUsername(refreshToken.substring(6)));
                 } else if (role.equals("ROLE_MEMBER")) {
                     customUserDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(jwtUtils.extractUsername(refreshToken.substring(6)));
                 }

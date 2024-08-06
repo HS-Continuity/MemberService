@@ -11,4 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CustomerFeignClient {
     @GetMapping("/productservice/api/customer/auth/{businessNumber}")
     ResponseEntity<ApiResponse<RetrieveCustomerResponse>> retrieveCustomerForAuth(@PathVariable("businessNumber") String businessNumber);
+
+    @GetMapping("/productservice/api/customer/auth/id/{customerId}")
+    ResponseEntity<ApiResponse<RetrieveCustomerResponse>> retrieveCustomerForAuthId(@PathVariable("customerId") Long customerId);
+
 }
