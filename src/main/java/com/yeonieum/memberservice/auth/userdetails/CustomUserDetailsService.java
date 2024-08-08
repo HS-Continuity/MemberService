@@ -1,5 +1,7 @@
 package com.yeonieum.memberservice.auth.userdetails;
 
+import com.yeonieum.memberservice.auth.customer.Customer;
+import com.yeonieum.memberservice.auth.customer.CustomerRepository;
 import com.yeonieum.memberservice.domain.member.entity.Member;
 import com.yeonieum.memberservice.domain.member.repository.MemberRepository;
 import com.yeonieum.memberservice.global.enums.Role;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
+    private final CustomerRepository customerRepository;
     private final CustomerFeignClient customerFeignClient;
 
     @Override
@@ -37,7 +40,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadCustomerByUniqueId(String customerLoginId) {
         ResponseEntity<ApiResponse<RetrieveCustomerResponse>> response = null;
         try {
-            response = customerFeignClient.retrieveCustomerForAuth(customerLoginId);
+            //response = customerFeignClient.retrieveCustomerForAuth(customerLoginId);
         } catch (FeignException e) {
             e.printStackTrace();
             throw new UsernameNotFoundException("Not Found CustomerId");
@@ -46,10 +49,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Not Found CustomerId");
         }
 
-        RetrieveCustomerResponse customer = response.getBody().getResult();
+        Customer customer = customerRepository.findByStoreBusinessNumber(customerLoginId).orElseThrow(
+                () -> new UsernameNotFoundException("Not Found CustomerId"));
+
+        //RetrieveCustomerResponse customer = response.getBody().getResult();
 
         CustomUserDto customUserDto = new CustomUserDto();
-        customUserDto.setPassword(customer.getPassword());
+        customUserDto.setPassword(customer.getCustomerPassword());
         customUserDto.setUsername(String.valueOf(customer.getCustomerId()));
         customUserDto.setRole(Role.ROLE_CUSTOMER);
 
