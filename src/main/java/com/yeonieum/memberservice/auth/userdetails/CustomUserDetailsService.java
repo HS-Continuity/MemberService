@@ -45,9 +45,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             e.printStackTrace();
             throw new UsernameNotFoundException("Not Found CustomerId");
         }
-        if(!response.getStatusCode().is2xxSuccessful()) {
-            throw new UsernameNotFoundException("Not Found CustomerId");
-        }
+//        if(!response.getStatusCode().is2xxSuccessful()) {
+//            throw new UsernameNotFoundException("Not Found CustomerId");
+//        }
 
         Customer customer = customerRepository.findByStoreBusinessNumber(customerLoginId).orElseThrow(
                 () -> new UsernameNotFoundException("Not Found CustomerId"));
